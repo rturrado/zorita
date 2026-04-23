@@ -58,10 +58,10 @@ and all data types (operands, addresses, and instructions) fit in a single 16-bi
 no multi-word storage is needed.
 
 # Instruction set
-
-Instructions are 16-bit long, where bit 15 is the most significant bit.     
+Instructions are 16-bit long, where bit 15 is the most significant bit.
+In the tables below, the most significant bits are shown leftmost.     
 Instruction opcode is encoded as bits 15:13.  
-Register operands are encoded as 3-bit values where 0b000 = *R0* and 0b111 = *R7*.  
+Register operands are encoded as 3-bit values ranging from 000 (*R0*) to 111 (*R7*).  
 
 ## HALT
 Stop the machine.
@@ -146,3 +146,14 @@ Subtract *src2* from *src1* and leave the result in *dst*.
 | 15:13 | 12:10 | 9:7 | 6:4 | 3:0 |
 | :---: | :---: | :---: | :---: | :---: |
 | 110 | *dst* | *src1* | *src2* | — |
+
+## Invalid instruction
+Any other instruction will be considered invalid.
+For this instruction set, that can only happen if the instruction opcode is *111*.
+
+Stop the machine with an error.
+
+### Machine code
+| 15:13 | 12:0 |
+| :---: | :---: |
+| 111 | — |
