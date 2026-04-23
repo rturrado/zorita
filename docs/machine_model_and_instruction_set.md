@@ -62,7 +62,6 @@ no multi-word storage is needed.
 Instructions are 16-bit long, where bit 15 is the most significant bit.     
 Instruction opcode is encoded as bits 15:13.  
 Register operands are encoded as 3-bit values where 0b000 = *R0* and 0b111 = *R7*.  
-Flags are encoded as 2-bit values where 0b00 = *ZF*, 0b01 = *NF*, and 0b10 = *OF*.
 
 ## HALT
 Stop the machine.
@@ -83,17 +82,28 @@ Result of subtraction is not stored.
 | :---: | :---: | :---: | :---: |
 | 001 | *op1* | *op2* | — |
 
-## JMP (*flag*,) *addr*
-Where *addr* is a data register, and *flag* is an optional flag from the status register.
+## JMP *cond*, *addr*
+Where *cond* is a condition, and *addr* is a data register.  
+The condition is encoded as a 4-bit value, as shown in the table below.
 
-Update *IP* to *addr*, optionally conditioned on whether a given flag is set.
+| Code | Condition | Logic | Code | Condition | Logic |
+|:---:|:---|:---|:---:|:---|:---|
+| 0000 | Zero (Equal) | ZF=1 | 1000 | Non-zero (Not equal) | ZF=0 |
+| 0001 | Negative | NF=1 | 1001 | Not negative | NF=0 |
+| 0010 | Overflow | OF=1 | 1010 | Not overflow | OF=0 |
+| 0011 | Less than | NF≠OF | 1011 | Greater or equal | NF=OF |
+| 0100 | Less or equal | (NF≠OF)∨ZF=1 | 1100 | Greater than | (NF=OF)∧ZF=0 |
+| 0101 | — | — | 1101 | — | — |
+| 0110 | — | — | 1110 | — | — |
+| 0111 | Always | — | 1111 | Never | — |
+
+If a given condition *cond* is met,
+reset the instruction pointer *IP* to the memory position pointed by *addr*.
 
 ### Machine code
-Bit 12 is the conditional jump bit. 1 if jump is conditional, 0 otherwise.  
-
-| 15:13 |  12  | 11:10 | 9:7 | 6:0 |
-| :---: |:----:| :---: | :---: | :---: |
-| 010 | *cj* | *flag* | *addr* | — |
+| 15:13 | 12:9 | 8:6 | 6:0 |
+| :---: | :---: | :---: | :---: |
+| 010 | *cond* | *addr* | — |
 
 ## LOAD *reg*, *addr*
 Where *reg* and *addr* are data registers.
