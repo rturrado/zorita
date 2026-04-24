@@ -30,3 +30,6 @@ message(STATUS
 gtest_discover_tests(${PROJECT_NAME}-test
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
+
+add_subdirectory(integration)
+add_subdirectory(unit)

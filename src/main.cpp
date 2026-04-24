@@ -1,16 +1,43 @@
+#include "zorita/Machine.hpp"
+#include "zorita/Version.hpp"
+
 #include <fmt/format.h>
-#include <iostream>
 
-#include "zorita/version.hpp"
+#include <filesystem>
+#include <string_view>
 
-void print_version() {
-    fmt::print("{} <<>> {}\n", version::get_version(), version::get_release_year());
+void print_help() {
+  fmt::println("Usage:                                "
+               "  zorita -h            Show help      "
+               "  zorita -v            Show version   "
+               "  zorita PROGRAM_PATH  Execute program");
 }
 
-int main() {
-    try {
-        print_version();
-    } catch (const std::runtime_error& error) {
-        fmt::print("Error: {}", error.what());
-    }
+void print_version() {
+  fmt::print("{} <<>> {}\n", version::get_version(),
+             version::get_release_year());
+}
+
+int main(int argc, char **argv) {
+  // Show help
+  if (argc < 2 || argc > 2 || std::string_view{argv[1]} == "-h") {
+    print_help();
+    exit(0);
+  }
+
+  // Show version
+  if (std::string_view{argv[1]} == "-v") {
+    print_version();
+    exit(0);
+  }
+
+  // Execute program
+  std::filesystem::path program_path{argv[1]};
+  try {
+    zorita::Machine machine{};
+    machine.load(program_path).run();
+  } catch (const zorita::MachineError &err) {
+    fmt::print("Error: {}\n", err.what());
+    exit(1);
+  }
 }

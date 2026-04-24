@@ -2,7 +2,12 @@ find_package(fmt REQUIRED)
 
 # Library
 add_library(${PROJECT_NAME}-lib
-	"${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Condition.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Decoder.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Instruction.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Machine.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Memory.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Registers.cpp"
 )
 
 target_compile_features(${PROJECT_NAME}-lib PRIVATE
@@ -14,7 +19,7 @@ target_link_libraries(${PROJECT_NAME}-lib
 )
 
 target_include_directories(${PROJECT_NAME}-lib
-    PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../include"
+    PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )
 
 if(CMAKE_COMPILER_IS_GNUCXX)
