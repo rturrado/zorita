@@ -7,9 +7,9 @@
 #include <string_view>
 
 void print_help() {
-  fmt::println("Usage:                                "
-               "  zorita -h            Show help      "
-               "  zorita -v            Show version   "
+  fmt::println("Usage:                                \n"
+               "  zorita -h            Show help      \n"
+               "  zorita -v            Show version   \n"
                "  zorita PROGRAM_PATH  Execute program");
 }
 
