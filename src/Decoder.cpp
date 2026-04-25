@@ -9,11 +9,11 @@ uint8_t Decoder::instruction_opcode(uint16_t word) {
 }
 
 uint8_t Decoder::cmp_op1_opcode(uint16_t word) {
-  return (word >> CMP_OP1_OPCODE_BEGIN) & DATA_REGISTER_OPCODE_MASK;
+  return (word >> CMP_OP1_OPCODE_BEGIN) & REGISTER_OPCODE_MASK;
 }
 
 uint8_t Decoder::cmp_op2_opcode(uint16_t word) {
-  return (word >> CMP_OP2_OPCODE_BEGIN) & DATA_REGISTER_OPCODE_MASK;
+  return (word >> CMP_OP2_OPCODE_BEGIN) & REGISTER_OPCODE_MASK;
 }
 
 uint8_t Decoder::jmp_cond_opcode(uint16_t word) {
@@ -21,47 +21,47 @@ uint8_t Decoder::jmp_cond_opcode(uint16_t word) {
 }
 
 uint8_t Decoder::jmp_addr_opcode(uint16_t word) {
-  return (word >> JMP_ADDR_OPCODE_BEGIN) & DATA_REGISTER_OPCODE_MASK;
+  return (word >> JMP_ADDR_OPCODE_BEGIN) & REGISTER_OPCODE_MASK;
 }
 
 uint8_t Decoder::load_reg_opcode(uint16_t word) {
-  return (word >> LOAD_REG_OPCODE_BEGIN) & DATA_REGISTER_OPCODE_MASK;
+  return (word >> LOAD_REG_OPCODE_BEGIN) & REGISTER_OPCODE_MASK;
 }
 
 uint8_t Decoder::load_addr_opcode(uint16_t word) {
-  return (word >> LOAD_ADDR_OPCODE_BEGIN) & DATA_REGISTER_OPCODE_MASK;
+  return (word >> LOAD_ADDR_OPCODE_BEGIN) & REGISTER_OPCODE_MASK;
 }
 
 uint8_t Decoder::store_reg_opcode(uint16_t word) {
-  return (word >> STORE_REG_OPCODE_BEGIN) & DATA_REGISTER_OPCODE_MASK;
+  return (word >> STORE_REG_OPCODE_BEGIN) & REGISTER_OPCODE_MASK;
 }
 
 uint8_t Decoder::store_addr_opcode(uint16_t word) {
-  return (word >> STORE_ADDR_OPCODE_BEGIN) & DATA_REGISTER_OPCODE_MASK;
+  return (word >> STORE_ADDR_OPCODE_BEGIN) & REGISTER_OPCODE_MASK;
 }
 
 uint8_t Decoder::add_dst_opcode(uint16_t word) {
-  return (word >> ADD_DST_OPCODE_BEGIN) & DATA_REGISTER_OPCODE_MASK;
+  return (word >> ADD_DST_OPCODE_BEGIN) & REGISTER_OPCODE_MASK;
 }
 
 uint8_t Decoder::add_src1_opcode(uint16_t word) {
-  return (word >> ADD_SRC1_OPCODE_BEGIN) & DATA_REGISTER_OPCODE_MASK;
+  return (word >> ADD_SRC1_OPCODE_BEGIN) & REGISTER_OPCODE_MASK;
 }
 
 uint8_t Decoder::add_src2_opcode(uint16_t word) {
-  return (word >> ADD_SRC2_OPCODE_BEGIN) & DATA_REGISTER_OPCODE_MASK;
+  return (word >> ADD_SRC2_OPCODE_BEGIN) & REGISTER_OPCODE_MASK;
 }
 
 uint8_t Decoder::sub_dst_opcode(uint16_t word) {
-  return (word >> SUB_DST_OPCODE_BEGIN) & DATA_REGISTER_OPCODE_MASK;
+  return (word >> SUB_DST_OPCODE_BEGIN) & REGISTER_OPCODE_MASK;
 }
 
 uint8_t Decoder::sub_src1_opcode(uint16_t word) {
-  return (word >> SUB_SRC1_OPCODE_BEGIN) & DATA_REGISTER_OPCODE_MASK;
+  return (word >> SUB_SRC1_OPCODE_BEGIN) & REGISTER_OPCODE_MASK;
 }
 
 uint8_t Decoder::sub_src2_opcode(uint16_t word) {
-  return (word >> SUB_SRC2_OPCODE_BEGIN) & DATA_REGISTER_OPCODE_MASK;
+  return (word >> SUB_SRC2_OPCODE_BEGIN) & REGISTER_OPCODE_MASK;
 }
 
 Instruction Decoder::decode(uint16_t word) {

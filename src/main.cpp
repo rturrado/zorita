@@ -35,7 +35,8 @@ int main(int argc, char **argv) {
   std::filesystem::path program_path{argv[1]};
   try {
     zorita::Machine machine{};
-    machine.load(program_path).run();
+    machine.load(program_path);
+    machine.run();
   } catch (const zorita::MachineError &err) {
     fmt::print("Error: {}\n", err.what());
     exit(1);

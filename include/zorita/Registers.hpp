@@ -79,7 +79,7 @@ public:
   void set_st(uint16_t value);
 
 private:
-  std::array<uint16_t, DATA_REGISTERS_SIZE> rx_;
+  std::array<uint16_t, NUM_DATA_REGISTERS> rx_;
   uint16_t ip_;
   StatusRegister st_;
 };

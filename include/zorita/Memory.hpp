@@ -23,6 +23,13 @@ public:
   /// @param value The 16-bit value to store.
   void write(uint16_t address, uint16_t value);
 
+  /// @brief Writes a block of 16-bit values to the given address.
+  /// @param address Memory address to write to.
+  /// @param block The pointer to the block of 16-bit values.
+  /// @param size_in_words The size of the block in words.
+  void write_block(uint16_t address, const uint16_t *block,
+                   uint16_t size_in_words);
+
 private:
   std::array<uint16_t, MEMORY_SIZE> data_;
 };

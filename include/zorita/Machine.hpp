@@ -21,22 +21,21 @@ class Machine {
 public:
   Machine();
 
-  /// @brief Loads a binary program image from disk into memory.
-  /// @param program Path to the binary program file.
-  /// @return Reference to this machine.
-  /// @throws MachineError if the file cannot be opened or is too large.
-  Machine &load(std::filesystem::path program);
+  /// @brief Loads a disk image of a program into memory.
+  /// @param program Path to the disk image.
+  /// @throws MachineError if an error is encountered.
+  void load(std::filesystem::path program);
 
   /// @brief Runs the machine until the program finishes or an error occurs.
-  /// @throws MachineError if an error is encountered.
   void run();
 
-  /// @brief Runs the machine until the program finishes or an error occurs.
+  /// @brief Executes one instruction.
   /// @throws MachineError if an error is encountered.
   void step();
 
 private:
-  /// @brief Sets the status register from the 32-bit result of an arithmetic operation.
+  /// @brief Sets the status register from the 32-bit result of an arithmetic
+  /// operation.
   /// @param res32 32-bit result of an arithmetic operation (add or sub).
   void set_st_from(int32_t res32);
 
@@ -46,7 +45,7 @@ private:
 
   /// @brief Executes a Halt instruction.
   /// @param halt Halt instruction.
-  void execute(const Halt &/* halt */);
+  void execute(const Halt & /* halt */);
 
   /// @brief Executes a Cmp instruction.
   /// @param cmp Cmp instruction.

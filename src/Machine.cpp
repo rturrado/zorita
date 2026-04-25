@@ -1,11 +1,37 @@
 #include "zorita/Machine.hpp"
 
+#include <fstream>
+#include <filesystem>
+#include <vector>
 
 namespace zorita {
 
 Machine::Machine() : state_{State::Stopped} {}
 
-Machine &Machine::load(std::filesystem::path /*program*/) { return *this; }
+void Machine::load(std::filesystem::path program) {
+  // Check program is a valid file path
+  if (!std::filesystem::is_regular_file(program)) {
+    throw MachineError{"invalid program path"};
+  }
+  // Get size of the program in bytes
+  auto size_in_bytes = std::filesystem::file_size(program);
+  // Check program size
+  if (size_in_bytes > MEMORY_SIZE * 2) {
+    throw MachineError{"invalid program: size is bigger than memory size"};
+  }
+  if (size_in_bytes % 2) {
+    throw MachineError{"invalid program: size is not aligned to a 2-byte word"};
+  }
+  // Open program in binary mode and for reading
+  auto fs = std::ifstream{program, std::ios::binary | std::ios::in};
+  // Load the program into a temporary buffer
+  // TODO: this is not optimal, although it is simple and clean
+  auto size_in_words = static_cast<uint16_t>(size_in_bytes / 2);
+  std::vector<uint16_t> buffer(size_in_words);
+  fs.read(reinterpret_cast<char *>(buffer.data()), size_in_bytes);
+  // Write the temporary buffer to memory
+  memory_.write_block(0, buffer.data(), size_in_words);
+}
 
 void Machine::run() {
   // Read the address of the first instruction from memory position 0
@@ -40,9 +66,7 @@ void Machine::execute(const Instruction &instruction) {
   std::visit([this](auto &&inst) { this->execute(inst); }, instruction);
 }
 
-void Machine::execute(const Halt &) {
-  set_state(State::Stopped);
-}
+void Machine::execute(const Halt &) { set_state(State::Stopped); }
 
 void Machine::execute(const Cmp &cmp) {
   int16_t val1 = static_cast<int16_t>(rx(cmp.op1));

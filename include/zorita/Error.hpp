@@ -11,14 +11,25 @@ struct MachineError : std::runtime_error {
       : std::runtime_error{message} {}
 };
 
-/// @brief Thrown when an invalid or unsupported condition code is evaluated.
+/// @brief Thrown when an invalid condition code is evaluated.
 struct ConditionError : MachineError {
   explicit ConditionError(const std::string &message) : MachineError{message} {}
 };
 
-/// @brief Thrown when a memory word cannot be decoded into a valid instruction.
+/// @brief Thrown when an invalid instruction opcode is evaluated.
 struct DecoderError : MachineError {
   explicit DecoderError(const std::string &message) : MachineError{message} {}
+};
+
+/// @brief Thrown when a memory error occurs.
+struct MemoryError : MachineError {
+  explicit MemoryError(const std::string &message) : MachineError{message} {}
+};
+
+/// @brief Thrown when an invalid flag index is evaluated.
+struct StatusRegisterError : MachineError {
+  explicit StatusRegisterError(const std::string &message)
+      : MachineError{message} {}
 };
 
 } // namespace zorita
