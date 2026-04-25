@@ -25,12 +25,15 @@ enum class InstructionOpcode : uint8_t {
 namespace instruction {
 
 /// @brief Stops the machine.
-struct Halt {};
+struct Halt {
+  bool operator==(const Halt &) const = default;
+};
 
 /// @brief Compares two data registers and updates the status register flags.
 struct Cmp {
   uint8_t op1;
   uint8_t op2;
+  bool operator==(const Cmp &) const = default;
 };
 
 /// @brief Jumps to an address held in a register, if a condition is met.
@@ -38,18 +41,21 @@ struct Cmp {
 struct Jmp {
   Condition condition;
   uint8_t address;
+  bool operator==(const Jmp &) const = default;
 };
 
 /// @brief Loads a memory value into a register.
 struct Load {
   uint8_t reg;
   uint8_t addr;
+  bool operator==(const Load &) const = default;
 };
 
 /// @brief Stores a register value into memory.
 struct Store {
   uint8_t reg;
   uint8_t addr;
+  bool operator==(const Store &) const = default;
 };
 
 /// @brief Adds two registers and stores the result in a third register,
@@ -58,6 +64,7 @@ struct Add {
   uint8_t dst;
   uint8_t src1;
   uint8_t src2;
+  bool operator==(const Add &) const = default;
 };
 
 /// @brief Subtracts one register from another and stores the result in a third
@@ -66,6 +73,7 @@ struct Sub {
   uint8_t dst;
   uint8_t src1;
   uint8_t src2;
+  bool operator==(const Sub &) const = default;
 };
 
 } // namespace instruction

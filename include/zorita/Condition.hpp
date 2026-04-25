@@ -35,6 +35,8 @@ public:
   /// @param opcode Condition opcode value.
   Condition(ConditionOpcode opcode);
 
+  bool operator==(const Condition &) const = default;
+
   /// @brief Evaluates the condition against a status register.
   /// @param st The status register to test.
   /// @return True if the condition holds.
