@@ -3,7 +3,7 @@
 A RISC machine implementation. Zorita means Little (Reduced) in Asturian dialect.
 
 ## Documentation
-For the machine model and instruction set design decisions, see the
+For the machine model and instruction set, see the
 [Machine Model and Instruction Set](docs/machine_model_and_instruction_set.md) document.
 ## Requirements
 
