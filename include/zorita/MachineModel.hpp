@@ -18,8 +18,9 @@ constexpr uint8_t DATA_REGISTERS_SIZE = 8;
 /// @{
 constexpr uint8_t ZERO_FLAG_INDEX = 0;
 constexpr uint8_t NEGATIVE_FLAG_INDEX = 1;
-constexpr uint8_t OVERFLOW_FLAG_INDEX = 2;
-constexpr uint8_t LAST_FLAG_INDEX = 2;
+constexpr uint8_t CARRY_FLAG_INDEX = 2;
+constexpr uint8_t OVERFLOW_FLAG_INDEX = 3;
+constexpr uint8_t LAST_FLAG_INDEX = 3;
 /// @}
 
 /// @name Instruction encoding

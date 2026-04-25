@@ -9,9 +9,14 @@ namespace zorita {
 
 StatusRegister::StatusRegister() : data_{0} {}
 
+StatusRegister::StatusRegister(uint16_t value) : data_{value} {}
+
+
 bool StatusRegister::zf() const { return data_[ZERO_FLAG_INDEX]; }
 
 bool StatusRegister::nf() const { return data_[NEGATIVE_FLAG_INDEX]; }
+
+bool StatusRegister::cf() const { return data_[CARRY_FLAG_INDEX]; }
 
 bool StatusRegister::of() const { return data_[OVERFLOW_FLAG_INDEX]; }
 

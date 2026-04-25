@@ -4,7 +4,6 @@ find_package(fmt REQUIRED)
 add_library(${PROJECT_NAME}-lib
     "${CMAKE_CURRENT_SOURCE_DIR}/Condition.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Decoder.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Instruction.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Machine.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Memory.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Registers.cpp"

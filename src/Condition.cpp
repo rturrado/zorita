@@ -12,6 +12,8 @@ bool Condition::check(const StatusRegister &st) const {
     return st.zf();
   case ConditionOpcode::Negative:
     return st.nf();
+  case ConditionOpcode::Carry:
+    return st.cf();
   case ConditionOpcode::Overflow:
     return st.of();
   case ConditionOpcode::LessThan:
@@ -24,6 +26,8 @@ bool Condition::check(const StatusRegister &st) const {
     return !st.zf();
   case ConditionOpcode::NotNegative:
     return !st.nf();
+  case ConditionOpcode::NotCarry:
+    return !st.cf();
   case ConditionOpcode::NotOverflow:
     return !st.of();
   case ConditionOpcode::GreaterOrEqual:

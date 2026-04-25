@@ -13,18 +13,25 @@ namespace zorita {
 enum class Flag : uint8_t {
   Zero = ZERO_FLAG_INDEX,
   Negative = NEGATIVE_FLAG_INDEX,
+  Carry = CARRY_FLAG_INDEX,
   Overflow = OVERFLOW_FLAG_INDEX,
 };
 
 /// @brief The status register.
 class StatusRegister {
 public:
+  /// @brief Initializes data_ to zero.
   StatusRegister();
+
+  /// @brief Initializes data_ from value.
+  StatusRegister(uint16_t value);
 
   /// @brief Returns true if the Zero flag is set.
   bool zf() const;
   /// @brief Returns true if the Negative flag is set.
   bool nf() const;
+  /// @brief Returns true if the Carry flag is set.
+  bool cf() const;
   /// @brief Returns true if the Overflow flag is set.
   bool of() const;
 

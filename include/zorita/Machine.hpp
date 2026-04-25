@@ -31,6 +31,48 @@ public:
   /// @throws MachineError if an error is encountered.
   void run();
 
+  /// @brief Runs the machine until the program finishes or an error occurs.
+  /// @throws MachineError if an error is encountered.
+  void step();
+
+private:
+  /// @brief Sets the status register from the 32-bit result of an arithmetic operation.
+  /// @param res32 32-bit result of an arithmetic operation (add or sub).
+  void set_st_from(int32_t res32);
+
+  /// @brief Executes a generic Instruction.
+  /// @param instruction Generic Instruction.
+  void execute(const Instruction &instruction);
+
+  /// @brief Executes a Halt instruction.
+  /// @param halt Halt instruction.
+  void execute(const Halt &/* halt */);
+
+  /// @brief Executes a Cmp instruction.
+  /// @param cmp Cmp instruction.
+  void execute(const Cmp &cmp);
+
+  /// @brief Executes a Jmp instruction.
+  /// @param jmp Jmp instruction.
+  void execute(const Jmp &jmp);
+
+  /// @brief Executes a Load instruction.
+  /// @param load Load instruction.
+  void execute(const Load &load);
+
+  /// @brief Executes a Store instruction.
+  /// @param store Store instruction.
+  void execute(const Store &store);
+
+  /// @brief Executes an Add instruction.
+  /// @param add Add instruction.
+  void execute(const Add &add);
+
+  /// @brief Executes a Sub instruction.
+  /// @param sub Sub instruction.
+  void execute(const Sub &sub);
+
+public:
   /// @brief Returns a reference to the machine's memory.
   Memory &memory();
 
