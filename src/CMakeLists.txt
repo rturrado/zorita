@@ -36,11 +36,3 @@ message(STATUS
     "      fmt_INCLUDE_DIRS: ${fmt_INCLUDE_DIRS}\n"
 )
 
-# Executable
-add_executable(${PROJECT_NAME}
-    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
-)
-
-target_link_libraries(${PROJECT_NAME}
-    PRIVATE ${PROJECT_NAME}-lib
-)
