@@ -1,6 +1,6 @@
 #pragma once
 
-#include "zorita/Registers.hpp"
+#include "zorita/StatusRegister.hpp"
 
 #include <cstdint>
 
@@ -41,7 +41,7 @@ public:
   /// @param st The status register to test.
   /// @return True if the condition holds.
   /// @throws ConditionError if the condition code is unrecognized.
-  bool check(const StatusRegister &st) const;
+  [[nodiscard]] bool check(const StatusRegister &st) const;
 
 private:
   ConditionOpcode opcode_;

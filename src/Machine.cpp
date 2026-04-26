@@ -1,36 +1,18 @@
 #include "zorita/Machine.hpp"
 
-#include <fstream>
 #include <filesystem>
-#include <vector>
+#include <fstream>
 
 namespace zorita {
 
-Machine::Machine() : state_{State::Stopped} {}
+Machine::Machine() = default;
 
-void Machine::load(std::filesystem::path program) {
+void Machine::load(const std::filesystem::path &program) {
   // Check program is a valid file path
   if (!std::filesystem::is_regular_file(program)) {
     throw MachineError{"invalid program path"};
   }
-  // Get size of the program in bytes
-  auto size_in_bytes = std::filesystem::file_size(program);
-  // Check program size
-  if (size_in_bytes > MEMORY_SIZE * 2) {
-    throw MachineError{"invalid program: size is bigger than memory size"};
-  }
-  if (size_in_bytes % 2) {
-    throw MachineError{"invalid program: size is not aligned to a 2-byte word"};
-  }
-  // Open program in binary mode and for reading
-  auto fs = std::ifstream{program, std::ios::binary | std::ios::in};
-  // Load the program into a temporary buffer
-  // TODO: this is not optimal, although it is simple and clean
-  auto size_in_words = static_cast<uint16_t>(size_in_bytes / 2);
-  std::vector<uint16_t> buffer(size_in_words);
-  fs.read(reinterpret_cast<char *>(buffer.data()), size_in_bytes);
-  // Write the temporary buffer to memory
-  memory_.write_block(0, buffer.data(), size_in_words);
+  memory_.load(program);
 }
 
 void Machine::run() {
@@ -69,12 +51,14 @@ void Machine::execute(const Instruction &instruction) {
 void Machine::execute(const Halt &) { set_state(State::Stopped); }
 
 void Machine::execute(const Cmp &cmp) {
-  int16_t val1 = static_cast<int16_t>(rx(cmp.op1));
-  int16_t val2 = static_cast<int16_t>(rx(cmp.op2));
-  int32_t res32 = static_cast<int32_t>(val1) - static_cast<int32_t>(val2);
-  set_st_from(res32);
   uint16_t uval1 = rx(cmp.op1);
   uint16_t uval2 = rx(cmp.op2);
+  // Calculate 32-bit result
+  int32_t val1 = static_cast<int16_t>(uval1);
+  int32_t val2 = static_cast<int16_t>(uval2);
+  int32_t res32 = val1 - val2;
+  // Update status register
+  set_st_from(res32);
   st().set_flag(Flag::Carry, uval1 < uval2);
 }
 
@@ -97,26 +81,32 @@ void Machine::execute(const Store &store) {
 }
 
 void Machine::execute(const Add &add) {
-  int16_t val1 = static_cast<int16_t>(rx(add.src1));
-  int16_t val2 = static_cast<int16_t>(rx(add.src2));
-  int32_t res32 = static_cast<int32_t>(val1) + static_cast<int32_t>(val2);
-  int16_t res16 = static_cast<int16_t>(res32);
-  set_rx(add.dst, res16);
-  set_st_from(res32);
   uint32_t uval1 = rx(add.src1);
   uint32_t uval2 = rx(add.src2);
+  // Calculate 32-bit result
+  int32_t val1 = static_cast<int16_t>(uval1);
+  int32_t val2 = static_cast<int16_t>(uval2);
+  int32_t res32 = val1 + val2;
+  // Get 16-bit result out of 32-bit result
+  int16_t res16 = static_cast<int16_t>(res32);
+  // Update registers
+  set_rx(add.dst, res16);
+  set_st_from(res32);
   st().set_flag(Flag::Carry, uval1 + uval2 > 0xffff);
 }
 
 void Machine::execute(const Sub &sub) {
-  int16_t val1 = static_cast<int16_t>(rx(sub.src1));
-  int16_t val2 = static_cast<int16_t>(rx(sub.src2));
-  int32_t res32 = static_cast<int32_t>(val1) - static_cast<int32_t>(val2);
-  int16_t res16 = static_cast<int16_t>(res32);
-  set_rx(sub.dst, res16);
-  set_st_from(res32);
   uint16_t uval1 = rx(sub.src1);
   uint16_t uval2 = rx(sub.src2);
+  // Calculate 32-bit result
+  int32_t val1 = static_cast<int16_t>(uval1);
+  int32_t val2 = static_cast<int16_t>(uval2);
+  int32_t res32 = val1 - val2;
+  // Get 16-bit result out of 32-bit result
+  int16_t res16 = static_cast<int16_t>(res32);
+  // Update registers
+  set_rx(sub.dst, res16);
+  set_st_from(res32);
   st().set_flag(Flag::Carry, uval1 < uval2);
 }
 

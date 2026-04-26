@@ -7,6 +7,7 @@ add_library(${PROJECT_NAME}-lib
     "${CMAKE_CURRENT_SOURCE_DIR}/Machine.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Memory.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Registers.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/StatusRegister.cpp"
 )
 
 target_compile_features(${PROJECT_NAME}-lib PRIVATE

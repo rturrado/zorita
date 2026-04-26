@@ -1,52 +1,12 @@
 #pragma once
 
 #include "zorita/MachineModel.hpp"
+#include "zorita/StatusRegister.hpp"
 
 #include <array>
-#include <bitset>
-#include <cstddef>
 #include <cstdint>
 
 namespace zorita {
-
-/// @brief Status register flag identifiers.
-enum class Flag : uint8_t {
-  Zero = ZERO_FLAG_INDEX,
-  Negative = NEGATIVE_FLAG_INDEX,
-  Carry = CARRY_FLAG_INDEX,
-  Overflow = OVERFLOW_FLAG_INDEX,
-};
-
-/// @brief The status register.
-class StatusRegister {
-public:
-  /// @brief Initializes data_ to zero.
-  StatusRegister();
-
-  /// @brief Initializes data_ from value.
-  StatusRegister(uint16_t value);
-
-  /// @brief Returns true if the Zero flag is set.
-  bool zf() const;
-  /// @brief Returns true if the Negative flag is set.
-  bool nf() const;
-  /// @brief Returns true if the Carry flag is set.
-  bool cf() const;
-  /// @brief Returns true if the Overflow flag is set.
-  bool of() const;
-
-  /// @brief Sets the status register.
-  /// @param value New status register value.
-  void set_st(uint16_t value);
-
-  /// @brief Sets a named flag with a given value.
-  /// @param flag The flag to modify.
-  /// @param value The value to set (default: true).
-  void set_flag(Flag flag, bool value = true);
-
-private:
-  std::bitset<REGISTER_SIZE> data_;
-};
 
 /// @brief The machine registers: data registers (R0–R7), instruction pointer
 /// (IP), and status register (ST).
@@ -57,10 +17,10 @@ public:
 
   /// @brief Returns the value of data register Rx.
   /// @param index Register index in [0, DATA_REGISTERS_SIZE).
-  uint16_t rx(uint8_t index) const;
+  [[nodiscard]] uint16_t rx(uint8_t index) const;
 
   /// @brief Returns the current instruction pointer value.
-  uint16_t ip() const;
+  [[nodiscard]] uint16_t ip() const;
 
   /// @brief Returns a reference to the status register.
   StatusRegister &st();
@@ -79,8 +39,8 @@ public:
   void set_st(uint16_t value);
 
 private:
-  std::array<uint16_t, NUM_DATA_REGISTERS> rx_;
-  uint16_t ip_;
+  std::array<uint16_t, NUM_DATA_REGISTERS> rx_{};
+  uint16_t ip_{0};
   StatusRegister st_;
 };
 

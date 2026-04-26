@@ -3,6 +3,7 @@
 
 #include <fmt/format.h>
 
+#include <cstdlib> // exit
 #include <filesystem>
 #include <string_view>
 
@@ -18,21 +19,25 @@ void print_version() {
              version::get_release_year());
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char *argv[]) {
   // Show help
-  if (argc < 2 || argc > 2 || std::string_view{argv[1]} == "-h") {
+  if (argc < 2 || argc > 2 ||
+      std::string_view{argv[1]} ==
+          "-h") { // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     print_help();
     exit(0);
   }
 
   // Show version
-  if (std::string_view{argv[1]} == "-v") {
+  if (std::string_view{argv[1]} ==
+      "-v") { // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     print_version();
     exit(0);
   }
 
   // Execute program
-  std::filesystem::path program_path{argv[1]};
+  std::filesystem::path program_path{
+      argv[1]}; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
   try {
     zorita::Machine machine{};
     machine.load(program_path);

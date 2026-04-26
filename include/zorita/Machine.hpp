@@ -11,9 +11,9 @@
 namespace zorita {
 
 /// @brief Execution state of the machine.
-enum class State : bool {
-  Stopped = 0,
-  Running = 1,
+enum class State {
+  Stopped,
+  Running,
 };
 
 /// @brief The RISC machine
@@ -24,7 +24,7 @@ public:
   /// @brief Loads a disk image of a program into memory.
   /// @param program Path to the disk image.
   /// @throws MachineError if an error is encountered.
-  void load(std::filesystem::path program);
+  void load(const std::filesystem::path &program);
 
   /// @brief Runs the machine until the program finishes or an error occurs.
   void run();
@@ -36,7 +36,7 @@ public:
 private:
   /// @brief Sets the status register from the 32-bit result of an arithmetic
   /// operation.
-  /// @param res32 32-bit result of an arithmetic operation (add or sub).
+  /// @param res32 32-bit result of an arithmetic operation.
   void set_st_from(int32_t res32);
 
   /// @brief Executes a generic Instruction.
@@ -77,16 +77,16 @@ public:
 
   /// @brief Returns the value of data register Rx.
   /// @param index Register index in [0, DATA_REGISTERS_SIZE).
-  uint16_t rx(uint8_t index) const;
+  [[nodiscard]] uint16_t rx(uint8_t index) const;
 
   /// @brief Returns the current instruction pointer value.
-  uint16_t ip() const;
+  [[nodiscard]] uint16_t ip() const;
 
   /// @brief Returns a reference to the status register.
   StatusRegister &st();
 
   /// @brief Returns the current execution state.
-  State state() const;
+  [[nodiscard]] State state() const;
 
   /// @brief Sets a data register.
   /// @param index Data register index in [0, DATA_REGISTERS_SIZE).
@@ -109,7 +109,7 @@ private:
   Decoder decoder_;
   Memory memory_;
   Registers registers_;
-  State state_;
+  State state_{State::Stopped};
 };
 
 } // namespace zorita

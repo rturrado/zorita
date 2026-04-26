@@ -4,14 +4,25 @@
 
 #include <array>
 #include <cstdint>
+#include <filesystem>
+#include <vector>
 
 namespace zorita {
 
 /// @brief Models the machine's memory.
 class Memory {
 public:
-  /// @brief Initializes all memory positions to 0xFFFF.
+  /// @brief Initializes all memory positions to 0xffff.
   Memory();
+
+  /// @brief Initializes memory from data, filling remainin positions with
+  /// 0xffff.
+  Memory(const std::vector<uint16_t> &data);
+
+  /// @brief Loads a disk image of a program into memory.
+  /// @param program Path to the disk image.
+  /// @throws MemoryError if an error is encountered.
+  void load(const std::filesystem::path &program);
 
   /// @brief Reads the 16-bit word at the given address.
   /// @param address Memory address to read from.
@@ -22,13 +33,6 @@ public:
   /// @param address Memory address to write to.
   /// @param value The 16-bit value to store.
   void write(uint16_t address, uint16_t value);
-
-  /// @brief Writes a block of 16-bit values to the given address.
-  /// @param address Memory address to write to.
-  /// @param block The pointer to the block of 16-bit values.
-  /// @param size_in_words The size of the block in words.
-  void write_block(uint16_t address, const uint16_t *block,
-                   uint16_t size_in_words);
 
 private:
   std::array<uint16_t, MEMORY_SIZE> data_;
