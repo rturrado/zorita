@@ -1,35 +1,34 @@
 find_package(GTest REQUIRED)
 
-add_executable(${PROJECT_NAME}-test
-    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
-)
+function(add_zorita_test TARGET)
+    add_executable(${TARGET} ${ARGN})
 
-target_compile_features(${PROJECT_NAME}-test PRIVATE
-    cxx_std_20
-)
-
-target_link_libraries(${PROJECT_NAME}-test
-    PRIVATE ${PROJECT_NAME}-lib
-    PRIVATE GTest::gmock
-    PRIVATE GTest::gtest
-)
-
-if(CMAKE_COMPILER_IS_GNUCXX)
-    target_compile_options(${PROJECT_NAME}-test PRIVATE
-        -Wall -Wextra -Werror -Wfatal-errors
+    target_compile_features(${TARGET} PRIVATE
+        cxx_std_20
     )
-else()
-    message(SEND_ERROR "Unknown compiler!")
-endif()
 
-message(STATUS
-    "[${PROJECT_NAME}] Target include directories:\n"
-    "      GTest_INCLUDE_DIRS: ${GTest_INCLUDE_DIRS}\n"
-)
+    target_compile_definitions(${TARGET} PRIVATE
+        RESOURCES_DIR="${PROJECT_SOURCE_DIR}/res"
+    )
 
-gtest_discover_tests(${PROJECT_NAME}-test
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-)
+    target_link_libraries(${TARGET}
+        PRIVATE ${PROJECT_NAME}-lib
+        PRIVATE GTest::gmock
+        PRIVATE GTest::gtest_main
+    )
+
+    if(CMAKE_COMPILER_IS_GNUCXX)
+        target_compile_options(${TARGET} PRIVATE
+            -Wall -Wextra -Werror -Wfatal-errors
+    )
+    else()
+        message(SEND_ERROR "Unknown compiler!")
+    endif()
+
+    gtest_discover_tests(${TARGET}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    )
+endfunction()
 
 add_subdirectory(integration)
 add_subdirectory(unit)
