@@ -15,14 +15,10 @@ public:
   /// @brief Initializes all memory positions to 0xffff.
   Memory();
 
-  /// @brief Initializes memory from data, filling remainin positions with
+  /// @brief Initializes memory from data, filling remaining positions with
   /// 0xffff.
+  /// @throws MemoryError if data is bigger than the memory size.
   Memory(const std::vector<uint16_t> &data);
-
-  /// @brief Loads a disk image of a program into memory.
-  /// @param program Path to the disk image.
-  /// @throws MemoryError if an error is encountered.
-  void load(const std::filesystem::path &program);
 
   /// @brief Reads the 16-bit word at the given address.
   /// @param address Memory address to read from.

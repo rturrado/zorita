@@ -6,6 +6,9 @@ namespace zorita {
 
 Registers::Registers() = default;
 
+Registers::Registers(const DataRegisters &rx, uint16_t ip, uint16_t st)
+    : rx_(rx), ip_(ip), st_(st) {}
+
 uint16_t Registers::rx(uint8_t index) const {
   assert(index < NUM_DATA_REGISTERS);
   return rx_[index];

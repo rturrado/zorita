@@ -8,12 +8,17 @@
 
 namespace zorita {
 
-/// @brief The machine registers: data registers (R0–R7), instruction pointer
+using DataRegisters = std::array<uint16_t, NUM_DATA_REGISTERS>;
+
+/// @brief The machine registers: data registers (R0 to R7), instruction pointer
 /// (IP), and status register (ST).
 class Registers {
 public:
   /// @brief Initializes all registers to zero.
   Registers();
+
+  /// @brief Initializes registers from user data.
+  Registers(const DataRegisters &rx, uint16_t ip, uint16_t st);
 
   /// @brief Returns the value of data register Rx.
   /// @param index Register index in [0, DATA_REGISTERS_SIZE).
@@ -39,7 +44,7 @@ public:
   void set_st(uint16_t value);
 
 private:
-  std::array<uint16_t, NUM_DATA_REGISTERS> rx_{};
+  DataRegisters rx_{};
   uint16_t ip_{0};
   StatusRegister st_;
 };

@@ -18,6 +18,10 @@ bool StatusRegister::cf() const { return data_[CARRY_FLAG_INDEX]; }
 
 bool StatusRegister::of() const { return data_[OVERFLOW_FLAG_INDEX]; }
 
+uint16_t StatusRegister::to_uint16() const {
+  return static_cast<uint16_t>(data_.to_ulong());
+}
+
 void StatusRegister::set_st(uint16_t value) { data_ = value; }
 
 void StatusRegister::set_flag(Flag flag, bool value) {

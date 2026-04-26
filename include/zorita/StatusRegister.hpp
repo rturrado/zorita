@@ -33,6 +33,9 @@ public:
   /// @brief Returns true if the Overflow flag is set.
   [[nodiscard]] bool of() const;
 
+  /// @brief Returns an uint16_t representation of the data.
+  [[nodiscard]] uint16_t to_uint16() const;
+
   /// @brief Sets the status register.
   /// @param value New status register value.
   void set_st(uint16_t value);

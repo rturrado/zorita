@@ -19,10 +19,16 @@ class Machine {
 public:
   Machine();
 
-  /// @brief Loads a disk image of a program into memory.
-  /// @param program Path to the disk image.
-  /// @throws MachineError if an error is encountered.
-  void load(const std::filesystem::path &program);
+  /// @brief Initializes memory from user data.
+  /// This constructor is useful to simulate the state of the machine after
+  /// having loaded a program into memory.
+  Machine(const std::vector<uint16_t> &memory);
+
+  /// @brief Initializes memory, registers, and state from user data.
+  /// This constructor is useful to simulate the state of the machine during
+  /// the execution of a given program.
+  Machine(const std::vector<uint16_t> &memory, const Registers &registers,
+          State state);
 
   /// @brief Runs the machine until the program finishes or an error occurs.
   void run();
@@ -42,7 +48,6 @@ private:
   void execute(const Instruction &instruction);
 
   /// @brief Executes a Halt instruction.
-  /// @param halt Halt instruction.
   void execute(const Halt & /* halt */);
 
   /// @brief Executes a Cmp instruction.

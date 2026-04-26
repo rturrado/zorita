@@ -3,20 +3,15 @@
 #include "zorita/Decoder.hpp"
 #include "zorita/Error.hpp"
 
-#include <filesystem>
-#include <fstream>
-
 namespace zorita {
 
 Machine::Machine() = default;
 
-void Machine::load(const std::filesystem::path &program) {
-  // Check program is a valid file path
-  if (!std::filesystem::is_regular_file(program)) {
-    throw MachineError{"invalid program path"};
-  }
-  memory_.load(program);
-}
+Machine::Machine(const std::vector<uint16_t> &memory) : memory_{memory} {}
+
+Machine::Machine(const std::vector<uint16_t> &memory,
+                 const Registers &registers, State state)
+    : memory_{memory}, registers_{registers}, state_{state} {}
 
 void Machine::run() {
   // Read the address of the first instruction from memory position 0
