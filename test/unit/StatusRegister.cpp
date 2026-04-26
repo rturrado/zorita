@@ -10,11 +10,13 @@ class StatusRegisterTest : public ::testing::Test {
 protected:
   //  3  2  1  0  index within the status register
   // OF CF NF ZF  flag
-  StatusRegister st0x0{0x00}; // ZF=0 NF=0 CF=0 OF=0
-  StatusRegister st0x1{0x01}; // ZF=1
-  StatusRegister st0x2{0x02}; // NF=1
-  StatusRegister st0x4{0x04}; // CF=1
+  StatusRegister st0x0{0x00}; // OF=0 CF=0 NF=0 ZF=0
+  StatusRegister st0x1{0x01}; //                ZF=1
+  StatusRegister st0x2{0x02}; //           NF=1
+  StatusRegister st0x4{0x04}; //      CF=1
+  StatusRegister st0x6{0x06}; //      CF=1 NF=1
   StatusRegister st0x8{0x08}; // OF=1
+  StatusRegister st0xa{0x0a}; // OF=1      NF=1
   StatusRegister st{};
 };
 
@@ -43,6 +45,11 @@ TEST_F(StatusRegisterTest, cf) {
 TEST_F(StatusRegisterTest, of) {
   EXPECT_FALSE(st0x0.of());
   EXPECT_TRUE(st0x8.of());
+}
+
+TEST_F(StatusRegisterTest, to_uint16_t) {
+  EXPECT_EQ(st0x6.to_uint16(), 0x06);
+  EXPECT_EQ(st0xa.to_uint16(), 0x0a);
 }
 
 TEST_F(StatusRegisterTest, set_st) {

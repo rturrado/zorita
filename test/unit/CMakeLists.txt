@@ -15,9 +15,6 @@ target_compile_features(${TARGET} PRIVATE
     cxx_std_20
 )
 
-target_compile_definitions(${TARGET} PRIVATE
-    RESOURCES_DIR="${PROJECT_SOURCE_DIR}/res"
-)
 
 target_link_libraries(${TARGET}
     PRIVATE ${PROJECT_NAME}-lib
