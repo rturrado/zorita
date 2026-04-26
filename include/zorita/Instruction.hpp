@@ -1,7 +1,6 @@
 #pragma once
 
 #include "zorita/Condition.hpp"
-#include "zorita/MachineModel.hpp"
 
 #include <cstdint>
 #include <variant>
