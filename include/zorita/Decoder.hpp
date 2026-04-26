@@ -13,7 +13,7 @@ public:
   /// @param word Raw value read from memory.
   /// @return The decoded instruction.
   /// @throws DecoderError if the opcode is invalid.
-  Instruction decode(uint16_t word);
+  static Instruction decode(uint16_t word);
 
 private:
   static uint8_t instruction_opcode(uint16_t word);

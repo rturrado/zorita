@@ -1,7 +1,5 @@
 #pragma once
 
-#include "zorita/Decoder.hpp"
-#include "zorita/Error.hpp"
 #include "zorita/Instruction.hpp"
 #include "zorita/Memory.hpp"
 #include "zorita/Registers.hpp"
@@ -106,7 +104,6 @@ public:
   void set_state(State state);
 
 private:
-  Decoder decoder_;
   Memory memory_;
   Registers registers_;
   State state_{State::Stopped};

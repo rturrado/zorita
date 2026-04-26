@@ -1,5 +1,8 @@
 #include "zorita/Machine.hpp"
 
+#include "zorita/Decoder.hpp"
+#include "zorita/Error.hpp"
+
 #include <filesystem>
 #include <fstream>
 
@@ -32,7 +35,7 @@ void Machine::step() {
   uint16_t word = memory_.read(registers_.ip());
   // Update IP to point to the next instruction
   registers_.set_ip(registers_.ip() + 1);
-  Instruction instruction = decoder_.decode(word);
+  Instruction instruction = Decoder::decode(word);
   execute(instruction);
 }
 

@@ -1,3 +1,4 @@
+#include "zorita/Error.hpp"
 #include "zorita/Machine.hpp"
 #include "zorita/Memory.hpp"
 
