@@ -1,10 +1,11 @@
 # Zorita
 
-A RISC machine implementation. Zorita means Little (Reduced) in Asturian dialect.
+A RISC machine implementation.
+Zorita means Little (Reduced) in the Asturian dialect.
 
 ## Documentation
 For the machine model and instruction set, see the
-[Machine Model and Instruction Set](docs/machine_model_and_instruction_set.md) document.
+[Machine Model and Instruction Set](docs/pages/machine_model_and_instruction_set.md) document.
 ## Requirements
 
 - `CMake` >= 3.22
@@ -25,16 +26,10 @@ conan profile detect
 conan build . -pr:a=conan/profiles/tests-debug-gcc-linux-x64 -b missing
 ```
 
-## Run
-
-```
-./build/Debug/src/zorita
-```
-
 ## Test
 
 ```
-./build/Debug/test/zorita-test
+./build/Debug/test/unit/zorita-unit-test
 ```
 
 ## Docker
@@ -51,6 +46,5 @@ docker run -it zorita
 And then execute it, together with the tests:
 
 ```
-$ ./build/Debug/src/zorita
-$ ./build/Debug/test/zorita-test
+$ ./build/Debug/test/unit/zorita-unit-test
 ```

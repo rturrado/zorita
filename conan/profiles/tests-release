@@ -1,0 +1,8 @@
+include(default)
+
+[settings]
+compiler.cppstd=20
+zorita/*:build_type=Release
+
+[conf]
+tools.build:skip_test=False
