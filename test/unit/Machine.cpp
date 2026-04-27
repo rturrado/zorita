@@ -90,6 +90,43 @@ protected:
       0x0001, // ip = 1
       0xc010, // sub r0, r0, r1
   };
+  std::vector<uint16_t> fib24_rx{
+      0x0000, // r0 = 0
+      0x0001, // r1 = 1
+      0x0018, // r2 = n
+      0x0008, // r3 = loop label
+      0x0011, // r4 = ret label
+      0x0001, // r5 = i = 1
+      0x0000, // r6 = lf[0], circular buffer with
+      0x0000, // r7 = lf[1], fib(i-1) and fib(i-2)
+  };
+  Registers fib24_registers{fib24_rx};
+  std::vector<uint16_t> fib24_program{
+      // Data section
+      0x0003, //   code section
+      0x0008, //   loop label
+      0x0011, //   ret label
+
+      // Code section
+      0x2800, //   cmp n, 0
+      0x4100, //   jz ret                  ; jmp ret if n == 0
+      0xBC10, //   add lf[1], 0, 1         ; lf[1] = 1
+      0x2880, //   cmp n, 1
+      0x4100, //   jz ret                  ; jmp ret if n == 1
+              // loop:
+      0xB690, //   add i, i, 1             ; i++
+      0x2A80, //   cmp n, i
+      0x4100, //   jz ret                  ; jmp ret if n == i
+      0xBB70, //   add lf[0], lf[0], lf[1] ; lf[0] = fib(i)
+      0xB690, //   add i, i, 1             ; i++
+      0x2A80, //   cmp n, i
+      0x4100, //   jz ret                  ; jmp ret if n == i
+      0xBF70, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(i)
+      0x4EC0, //   j loop                  ; jmp loop
+              // ret:
+      0xBF70, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(n)
+      0x0000, //   halt
+  };
   Machine machine_halt{halt_program};
   Machine machine_cmp{cmp_program};
   Machine machine_jmp_zero{jmp_zero_program};
@@ -110,16 +147,22 @@ protected:
   Machine machine_store{store_program};
   Machine machine_add{add_program};
   Machine machine_sub{sub_program};
+  Machine machine_fib24{fib24_program, fib24_registers};
 };
 
 TEST_F(MachineTest, default_constructor) {
   EXPECT_EQ(machine.state(), State::Stopped);
 }
 
-TEST_F(MachineTest, run) {
+TEST_F(MachineTest, run_halt) {
   machine_halt.set_ip(0x0001);
   machine_halt.run();
   EXPECT_EQ(machine_halt.state(), State::Stopped);
+}
+
+TEST_F(MachineTest, run_fib24) {
+  machine_fib24.run();
+  EXPECT_EQ(machine_fib24.rx(7), 46368);
 }
 
 TEST_F(MachineTest, step_halt) {
