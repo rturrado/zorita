@@ -26,6 +26,12 @@ struct MemoryError : MachineError {
   explicit MemoryError(const std::string &message) : MachineError{message} {}
 };
 
+/// @brief Thrown when a register error occurs.
+struct RegistersError : MachineError {
+  explicit RegistersError(const std::string &message)
+      : MachineError{message} {}
+};
+
 /// @brief Thrown when an invalid flag index is evaluated.
 struct StatusRegisterError : MachineError {
   explicit StatusRegisterError(const std::string &message)

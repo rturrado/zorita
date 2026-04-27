@@ -4,7 +4,6 @@
 
 #include <filesystem>
 #include <fmt/format.h>
-#include <fstream>
 #include <vector>
 
 namespace zorita {

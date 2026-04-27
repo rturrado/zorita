@@ -1,13 +1,21 @@
 #include "zorita/Registers.hpp"
 
+#include "zorita/Error.hpp"
+
 #include <cassert>
+#include <fmt/format.h>
 
 namespace zorita {
 
 Registers::Registers() = default;
 
-Registers::Registers(const DataRegisters &rx, uint16_t ip, uint16_t st)
-    : rx_(rx), ip_(ip), st_(st) {}
+Registers::Registers(const std::vector<uint16_t> &rx) {
+  if (rx.size() > rx_.size()) {
+    throw RegistersError{fmt::format(
+        "invalid rx: size of vector is bigger than {}", rx_.size())};
+  }
+  std::copy(rx.begin(), rx.end(), rx_.begin());
+}
 
 uint16_t Registers::rx(uint8_t index) const {
   assert(index < NUM_DATA_REGISTERS);

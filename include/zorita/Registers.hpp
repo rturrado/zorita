@@ -5,6 +5,7 @@
 
 #include <array>
 #include <cstdint>
+#include <vector>
 
 namespace zorita {
 
@@ -18,7 +19,7 @@ public:
   Registers();
 
   /// @brief Initializes registers from user data.
-  Registers(const DataRegisters &rx, uint16_t ip, uint16_t st);
+  Registers(const std::vector<uint16_t> &rx);
 
   /// @brief Returns the value of data register Rx.
   /// @param index Register index in [0, DATA_REGISTERS_SIZE).
@@ -46,7 +47,7 @@ public:
 private:
   DataRegisters rx_{};
   uint16_t ip_{0};
-  StatusRegister st_;
+  StatusRegister st_{};
 };
 
 } // namespace zorita

@@ -20,15 +20,13 @@ public:
   Machine();
 
   /// @brief Initializes memory from user data.
-  /// This constructor is useful to simulate the state of the machine after
-  /// having loaded a program into memory.
+  /// This constructor can be useful to simulate the execution of an
+  /// instruction.
   Machine(const std::vector<uint16_t> &memory);
 
-  /// @brief Initializes memory, registers, and state from user data.
-  /// This constructor is useful to simulate the state of the machine during
-  /// the execution of a given program.
-  Machine(const std::vector<uint16_t> &memory, const Registers &registers,
-          State state);
+  /// @brief Initializes memory and registers from user data.
+  /// This constructor can be useful to simulate the execution of a program.
+  Machine(const std::vector<uint16_t> &memory, const Registers &registers);
 
   /// @brief Runs the machine until the program finishes or an error occurs.
   void run();

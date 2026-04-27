@@ -10,8 +10,8 @@ Machine::Machine() = default;
 Machine::Machine(const std::vector<uint16_t> &memory) : memory_{memory} {}
 
 Machine::Machine(const std::vector<uint16_t> &memory,
-                 const Registers &registers, State state)
-    : memory_{memory}, registers_{registers}, state_{state} {}
+                 const Registers &registers)
+    : memory_{memory}, registers_{registers} {}
 
 void Machine::run() {
   // Read the address of the first instruction from memory position 0
