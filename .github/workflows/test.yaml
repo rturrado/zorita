@@ -27,7 +27,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y clang-18 libc++-18-dev libc++abi-18-dev
           sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-18 100 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-18
-      - uses: ./.github/actions/cpp-tests
+      - uses: ./.github/actions
         with:
           build_type: ${{ matrix.build_type }}
           conan_profile_host: conan/profiles/tests-${{ matrix.build_type }}-${{ matrix.compiler }}-linux-x64
@@ -54,7 +54,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y clang-18 libc++-18-dev libc++abi-18-dev
           sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-18 100 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-18
-      - uses: ./.github/actions/cpp-tests
+      - uses: ./.github/actions
         with:
           build_type: ${{ matrix.build_type }}
           conan_profile_host: conan/profiles/tests-${{ matrix.build_type }}-${{ matrix.compiler }}-linux-arm64
@@ -73,7 +73,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: ./.github/actions/cpp-tests
+      - uses: ./.github/actions
         with:
           build_type: ${{ matrix.build_type }}
           conan_profile_host: conan/profiles/tests-${{ matrix.build_type }}-apple_clang-macos-x64
@@ -92,7 +92,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: ./.github/actions/cpp-tests
+      - uses: ./.github/actions
         with:
           build_type: ${{ matrix.build_type }}
           conan_profile_host: conan/profiles/tests-${{ matrix.build_type }}-apple_clang-macos-arm64
@@ -111,7 +111,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: ./.github/actions/cpp-tests
+      - uses: ./.github/actions
         with:
           build_type: ${{ matrix.build_type }}
           conan_profile_host: conan/profiles/tests-${{ matrix.build_type }}-msvc-windows-x64
@@ -130,7 +130,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: ./.github/actions/cpp-tests
+      - uses: ./.github/actions
         with:
           build_type: ${{ matrix.build_type }}
           conan_profile_host: conan/profiles/${{ matrix.build_type }}-gcc-linux-x64-shared

@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build C++ tests (gcc-clang/Linux/x64)
-        uses: ./.github/actions/cpp-tests
+        uses: ./.github/actions
         with:
           build_type: Release
           conan_profile_host: conan/profiles/tests-release-gcc-linux-x64
