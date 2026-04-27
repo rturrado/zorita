@@ -7,8 +7,8 @@ on:
   pull_request:
 
 jobs:
-  cpp-linux-x64:
-    name: "C++ tests (gcc-clang/Linux/x64)"
+  linux-x64:
+    name: "GCC-Clang/Linux/x64"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -21,7 +21,7 @@ jobs:
           - gcc
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install libc++
         run: |
           sudo apt-get update
@@ -35,8 +35,8 @@ jobs:
           conan_profile_build: conan/profiles/tests-${{ matrix.build_type }}-${{ matrix.compiler }}-linux-x64
           shell: bash
 
-  cpp-linux-arm64:
-    name: "C++ tests (gcc/Linux/ARM64)"
+  linux-arm64:
+    name: "GCC/Linux/ARM64"
     runs-on: ubuntu-24.04-arm
     strategy:
       fail-fast: false
@@ -49,7 +49,7 @@ jobs:
           - gcc
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install libc++
         run: |
           sudo apt-get update
@@ -63,9 +63,9 @@ jobs:
           conan_profile_build: conan/profiles/tests-${{ matrix.build_type }}-${{ matrix.compiler }}-linux-arm64
           shell: bash
 
-  cpp-macos-x64:
-    name: "C++ tests (clang/MacOS/x64)"
-    runs-on: macos-13  # x64
+  macos-arm64:
+    name: "Clang/MacOS/ARM64"
+    runs-on: macos-14  # ARM64
     strategy:
       fail-fast: false
       matrix:
@@ -74,26 +74,7 @@ jobs:
           - Release
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - uses: ./.github/actions
-        with:
-          build_type: ${{ matrix.build_type }}
-          conan_profile_host: conan/profiles/tests-${{ matrix.build_type }}-apple_clang-macos-x64
-          conan_profile_build: conan/profiles/tests-${{ matrix.build_type }}-apple_clang-macos-x64
-          shell: bash
-
-  cpp-macos-arm64:
-    name: "C++ tests (clang/macos/ARM64)"
-    runs-on: macos-14  # ARM4
-    strategy:
-      fail-fast: false
-      matrix:
-        build_type:
-          - Debug
-          - Release
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - uses: ./.github/actions
         with:
           build_type: ${{ matrix.build_type }}
@@ -101,8 +82,8 @@ jobs:
           conan_profile_build: conan/profiles/tests-${{ matrix.build_type }}-apple_clang-macos-arm64
           shell: bash
 
-  cpp-windows-x64:
-    name: "C++ tests (msvc/Windows/x64)"
+  windows-x64:
+    name: "MSVC/Windows/x64"
     runs-on: windows-latest
     strategy:
       fail-fast: false
@@ -112,7 +93,7 @@ jobs:
           - Release
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - uses: ./.github/actions
         with:
           build_type: ${{ matrix.build_type }}
@@ -120,8 +101,8 @@ jobs:
           conan_profile_build: conan/profiles/tests-${{ matrix.build_type }}-msvc-windows-x64
           shell: bash
 
-  cpp-shared:
-    name: "C++ tests (shared)"
+  shared:
+    name: "Shared"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -131,7 +112,7 @@ jobs:
           - Release
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - uses: ./.github/actions
         with:
           build_type: ${{ matrix.build_type }}
@@ -140,15 +121,15 @@ jobs:
           shell: bash
 
   docker:
-    name: Docker
+    name: "Docker"
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       - name: Build without pushing
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           push: false
           tags: zorita:latest
@@ -157,12 +138,12 @@ jobs:
     # see https://github.community/t/status-check-for-a-matrix-jobs/127354/7
     name: Report status
     needs:
-      - cpp-linux-x64
-      - cpp-linux-arm64
-      - cpp-macos-x64
-      - cpp-macos-arm64
-      - cpp-windows-x64
-      - cpp-shared
+      - linux-x64
+      - linux-arm64
+      - macos-x64
+      - macos-arm64
+      - windows-x64
+      - shared
       - docker
     if: ${{ always() }}
     runs-on: ubuntu-latest

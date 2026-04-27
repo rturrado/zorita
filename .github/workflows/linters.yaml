@@ -9,15 +9,15 @@ on:
       - master
 
 jobs:
-  cpp-linters:
-    name: "C++ linters"
+  linters:
+    name: "Linters"
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Build C++ tests (gcc-clang/Linux/x64)
         uses: ./.github/actions
         with:
