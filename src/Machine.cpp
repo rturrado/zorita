@@ -35,7 +35,7 @@ void Machine::step() {
 }
 
 void Machine::set_st_from(int32_t res32) {
-  int16_t res16 = static_cast<int16_t>(res32);
+  auto res16 = static_cast<int16_t>(res32);
   st().set_flag(Flag::Zero, res16 == 0);
   st().set_flag(Flag::Negative, res16 < 0);
   // Carry flag is set directly at Cmp, Add, and Sub
@@ -46,11 +46,11 @@ void Machine::execute(const Instruction &instruction) {
   std::visit([this](auto &&inst) { this->execute(inst); }, instruction);
 }
 
-void Machine::execute(const Halt &) { set_state(State::Stopped); }
+void Machine::execute(const Halt & /*unused*/) { set_state(State::Stopped); }
 
 void Machine::execute(const Cmp &cmp) {
-  uint16_t uval1 = rx(cmp.op1);
-  uint16_t uval2 = rx(cmp.op2);
+  uint16_t uval1 = rx(cmp.op1_);
+  uint16_t uval2 = rx(cmp.op2_);
   // Calculate 32-bit result
   int32_t val1 = static_cast<int16_t>(uval1);
   int32_t val2 = static_cast<int16_t>(uval2);
@@ -61,49 +61,49 @@ void Machine::execute(const Cmp &cmp) {
 }
 
 void Machine::execute(const Jmp &jmp) {
-  if (jmp.condition.check(st())) {
-    set_ip(rx(jmp.address));
+  if (jmp.condition_.check(st())) {
+    set_ip(rx(jmp.address_));
   }
 }
 
 void Machine::execute(const Load &load) {
-  uint16_t address = rx(load.addr);
+  uint16_t address = rx(load.addr_);
   uint16_t value = memory().read(address);
-  set_rx(load.reg, value);
+  set_rx(load.reg_, value);
 }
 
 void Machine::execute(const Store &store) {
-  uint16_t address = rx(store.addr);
-  uint16_t value = rx(store.reg);
+  uint16_t address = rx(store.addr_);
+  uint16_t value = rx(store.reg_);
   memory().write(address, value);
 }
 
 void Machine::execute(const Add &add) {
-  uint32_t uval1 = rx(add.src1);
-  uint32_t uval2 = rx(add.src2);
+  uint32_t uval1 = rx(add.src1_);
+  uint32_t uval2 = rx(add.src2_);
   // Calculate 32-bit result
   int32_t val1 = static_cast<int16_t>(uval1);
   int32_t val2 = static_cast<int16_t>(uval2);
   int32_t res32 = val1 + val2;
   // Get 16-bit result out of 32-bit result
-  int16_t res16 = static_cast<int16_t>(res32);
+  auto res16 = static_cast<int16_t>(res32);
   // Update registers
-  set_rx(add.dst, res16);
+  set_rx(add.dst_, res16);
   set_st_from(res32);
   st().set_flag(Flag::Carry, uval1 + uval2 > 0xffff);
 }
 
 void Machine::execute(const Sub &sub) {
-  uint16_t uval1 = rx(sub.src1);
-  uint16_t uval2 = rx(sub.src2);
+  uint16_t uval1 = rx(sub.src1_);
+  uint16_t uval2 = rx(sub.src2_);
   // Calculate 32-bit result
   int32_t val1 = static_cast<int16_t>(uval1);
   int32_t val2 = static_cast<int16_t>(uval2);
   int32_t res32 = val1 - val2;
   // Get 16-bit result out of 32-bit result
-  int16_t res16 = static_cast<int16_t>(res32);
+  auto res16 = static_cast<int16_t>(res32);
   // Update registers
-  set_rx(sub.dst, res16);
+  set_rx(sub.dst_, res16);
   set_st_from(res32);
   st().set_flag(Flag::Carry, uval1 < uval2);
 }

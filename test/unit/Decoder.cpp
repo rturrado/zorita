@@ -13,66 +13,66 @@ using namespace instruction;
 class DecoderTest : public ::testing::Test {
 protected:
   void SetUp() override {}
-  uint16_t halt_opcode{0x0 << INSTRUCTION_OPCODE_BEGIN};
-  Halt halt_instruction{};
-  uint16_t cmp_opcode{0x1 << INSTRUCTION_OPCODE_BEGIN |
-                      0x1 << CMP_OP1_OPCODE_BEGIN |
-                      0x2 << CMP_OP2_OPCODE_BEGIN};
-  Cmp cmp_instruction{0x1, 0x2};
-  uint16_t jmp_opcode{0x2 << INSTRUCTION_OPCODE_BEGIN |
-                      0x7 << JMP_COND_OPCODE_BEGIN |
-                      0x1 << JMP_ADDR_OPCODE_BEGIN};
-  Jmp jmp_instruction{ConditionOpcode{0x7}, 0x1};
-  uint16_t load_opcode{0x3 << INSTRUCTION_OPCODE_BEGIN |
-                       0x1 << LOAD_REG_OPCODE_BEGIN |
-                       0x2 << LOAD_ADDR_OPCODE_BEGIN};
-  Load load_instruction{0x1, 0x2};
-  uint16_t store_opcode{0x4 << INSTRUCTION_OPCODE_BEGIN |
-                        0x1 << STORE_REG_OPCODE_BEGIN |
-                        0x2 << STORE_ADDR_OPCODE_BEGIN};
-  Store store_instruction{0x1, 0x2};
-  uint16_t add_opcode{
-      0x5 << INSTRUCTION_OPCODE_BEGIN | 0x1 << ADD_DST_OPCODE_BEGIN |
-      0x2 << ADD_SRC1_OPCODE_BEGIN | 0x3 << ADD_SRC2_OPCODE_BEGIN};
-  Add add_instruction{0x1, 0x2, 0x3};
-  uint16_t sub_opcode{
-      0x6 << INSTRUCTION_OPCODE_BEGIN | 0x1 << SUB_DST_OPCODE_BEGIN |
-      0x2 << SUB_SRC1_OPCODE_BEGIN | 0x3 << SUB_SRC2_OPCODE_BEGIN};
-  Sub sub_instruction{0x1, 0x2, 0x3};
-  uint16_t invalid_opcode{0x7 << INSTRUCTION_OPCODE_BEGIN};
+  uint16_t halt_opcode_{0x0 << instruction_opcode_begin};
+  Halt halt_instruction_{};
+  uint16_t cmp_opcode_{0x1 << instruction_opcode_begin |
+                       0x1 << cmp_op1_opcode_begin |
+                       0x2 << cmp_op2_opcode_begin};
+  Cmp cmp_instruction_{.op1_ = 0x1, .op2_ = 0x2};
+  uint16_t jmp_opcode_{0x2 << instruction_opcode_begin |
+                       0x7 << jmp_cond_opcode_begin |
+                       0x1 << jmp_addr_opcode_begin};
+  Jmp jmp_instruction_{.condition_ = ConditionOpcode{0x7}, .address_ = 0x1};
+  uint16_t load_opcode_{0x3 << instruction_opcode_begin |
+                        0x1 << load_reg_opcode_begin |
+                        0x2 << load_addr_opcode_begin};
+  Load load_instruction_{.reg_ = 0x1, .addr_ = 0x2};
+  uint16_t store_opcode_{0x4 << instruction_opcode_begin |
+                         0x1 << store_reg_opcode_begin |
+                         0x2 << store_addr_opcode_begin};
+  Store store_instruction_{.reg_ = 0x1, .addr_ = 0x2};
+  uint16_t add_opcode_{
+      0x5 << instruction_opcode_begin | 0x1 << add_dst_opcode_begin |
+      0x2 << add_src1_opcode_begin | 0x3 << add_src2_opcode_begin};
+  Add add_instruction_{.dst_ = 0x1, .src1_ = 0x2, .src2_ = 0x3};
+  uint16_t sub_opcode_{
+      0x6 << instruction_opcode_begin | 0x1 << sub_dst_opcode_begin |
+      0x2 << sub_src1_opcode_begin | 0x3 << sub_src2_opcode_begin};
+  Sub sub_instruction_{.dst_ = 0x1, .src1_ = 0x2, .src2_ = 0x3};
+  uint16_t invalid_opcode_{0x7 << instruction_opcode_begin};
   Decoder decoder;
 };
 
 TEST_F(DecoderTest, decode) {
-  auto instruction = decoder.decode(halt_opcode);
+  auto instruction = zorita::Decoder::decode(halt_opcode_);
   EXPECT_TRUE(std::holds_alternative<Halt>(instruction));
-  EXPECT_EQ(std::get<Halt>(instruction), halt_instruction);
+  EXPECT_EQ(std::get<Halt>(instruction), halt_instruction_);
 
-  instruction = decoder.decode(cmp_opcode);
+  instruction = zorita::Decoder::decode(cmp_opcode_);
   EXPECT_TRUE(std::holds_alternative<Cmp>(instruction));
-  EXPECT_EQ(std::get<Cmp>(instruction), cmp_instruction);
+  EXPECT_EQ(std::get<Cmp>(instruction), cmp_instruction_);
 
-  instruction = decoder.decode(jmp_opcode);
+  instruction = zorita::Decoder::decode(jmp_opcode_);
   EXPECT_TRUE(std::holds_alternative<Jmp>(instruction));
-  EXPECT_EQ(std::get<Jmp>(instruction), jmp_instruction);
+  EXPECT_EQ(std::get<Jmp>(instruction), jmp_instruction_);
 
-  instruction = decoder.decode(load_opcode);
+  instruction = zorita::Decoder::decode(load_opcode_);
   EXPECT_TRUE(std::holds_alternative<Load>(instruction));
-  EXPECT_EQ(std::get<Load>(instruction), load_instruction);
+  EXPECT_EQ(std::get<Load>(instruction), load_instruction_);
 
-  instruction = decoder.decode(store_opcode);
+  instruction = zorita::Decoder::decode(store_opcode_);
   EXPECT_TRUE(std::holds_alternative<Store>(instruction));
-  EXPECT_EQ(std::get<Store>(instruction), store_instruction);
+  EXPECT_EQ(std::get<Store>(instruction), store_instruction_);
 
-  instruction = decoder.decode(add_opcode);
+  instruction = zorita::Decoder::decode(add_opcode_);
   EXPECT_TRUE(std::holds_alternative<Add>(instruction));
-  EXPECT_EQ(std::get<Add>(instruction), add_instruction);
+  EXPECT_EQ(std::get<Add>(instruction), add_instruction_);
 
-  instruction = decoder.decode(sub_opcode);
+  instruction = zorita::Decoder::decode(sub_opcode_);
   EXPECT_TRUE(std::holds_alternative<Sub>(instruction));
-  EXPECT_EQ(std::get<Sub>(instruction), sub_instruction);
+  EXPECT_EQ(std::get<Sub>(instruction), sub_instruction_);
 
-  EXPECT_THAT([&]() { decoder.decode(invalid_opcode); },
+  EXPECT_THAT([&]() { decoder.decode(invalid_opcode_); },
               testing::ThrowsMessage<DecoderError>("invalid instruction"));
 }
 

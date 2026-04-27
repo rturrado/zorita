@@ -2,6 +2,7 @@
 
 #include "zorita/Error.hpp"
 
+#include <algorithm>
 #include <filesystem>
 #include <fmt/format.h>
 #include <vector>
@@ -15,7 +16,7 @@ Memory::Memory(const std::vector<uint16_t> &data) {
     throw MemoryError{fmt::format(
         "invalid program: size is bigger than {} bytes", data_.size() * 2)};
   }
-  std::copy(data.begin(), data.end(), data_.begin());
+  std::ranges::copy(data, data_.begin());
   std::fill(data_.begin() + data.size(), data_.end(), 0xffff);
 }
 

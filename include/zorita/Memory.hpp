@@ -31,7 +31,7 @@ public:
   void write(uint16_t address, uint16_t value);
 
 private:
-  std::array<uint16_t, MEMORY_SIZE> data_;
+  std::array<uint16_t, memory_size> data_{};
 };
 
 } // namespace zorita

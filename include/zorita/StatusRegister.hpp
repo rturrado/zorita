@@ -9,10 +9,10 @@ namespace zorita {
 
 /// @brief Status register flag identifiers.
 enum class Flag : uint8_t {
-  Zero = ZERO_FLAG_INDEX,
-  Negative = NEGATIVE_FLAG_INDEX,
-  Carry = CARRY_FLAG_INDEX,
-  Overflow = OVERFLOW_FLAG_INDEX,
+  Zero = zero_flag_index,
+  Negative = negative_flag_index,
+  Carry = carry_flag_index,
+  Overflow = overflow_flag_index,
 };
 
 /// @brief The status register.
@@ -46,7 +46,7 @@ public:
   void set_flag(Flag flag, bool value = true);
 
 private:
-  std::bitset<REGISTER_SIZE> data_;
+  std::bitset<register_size> data_;
 };
 
 } // namespace zorita

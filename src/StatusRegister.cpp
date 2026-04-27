@@ -10,13 +10,13 @@ StatusRegister::StatusRegister() : data_{0} {}
 
 StatusRegister::StatusRegister(uint16_t value) : data_{value} {}
 
-bool StatusRegister::zf() const { return data_[ZERO_FLAG_INDEX]; }
+bool StatusRegister::zf() const { return data_[zero_flag_index]; }
 
-bool StatusRegister::nf() const { return data_[NEGATIVE_FLAG_INDEX]; }
+bool StatusRegister::nf() const { return data_[negative_flag_index]; }
 
-bool StatusRegister::cf() const { return data_[CARRY_FLAG_INDEX]; }
+bool StatusRegister::cf() const { return data_[carry_flag_index]; }
 
-bool StatusRegister::of() const { return data_[OVERFLOW_FLAG_INDEX]; }
+bool StatusRegister::of() const { return data_[overflow_flag_index]; }
 
 uint16_t StatusRegister::to_uint16() const {
   return static_cast<uint16_t>(data_.to_ulong());
@@ -25,8 +25,8 @@ uint16_t StatusRegister::to_uint16() const {
 void StatusRegister::set_st(uint16_t value) { data_ = value; }
 
 void StatusRegister::set_flag(Flag flag, bool value) {
-  size_t index = static_cast<std::size_t>(flag);
-  if (index > LAST_FLAG_INDEX) {
+  auto index = static_cast<std::size_t>(flag);
+  if (index > last_flag_index) {
     throw StatusRegisterError{"invalid flag index"};
   }
   data_[index] = value;

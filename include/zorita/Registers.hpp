@@ -9,7 +9,7 @@
 
 namespace zorita {
 
-using DataRegisters = std::array<uint16_t, NUM_DATA_REGISTERS>;
+using DataRegisters = std::array<uint16_t, num_data_registers>;
 
 /// @brief The machine registers: data registers (R0 to R7), instruction pointer
 /// (IP), and status register (ST).
@@ -47,7 +47,7 @@ public:
 private:
   DataRegisters rx_{};
   uint16_t ip_{0};
-  StatusRegister st_{};
+  StatusRegister st_;
 };
 
 } // namespace zorita

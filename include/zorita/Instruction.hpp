@@ -30,48 +30,48 @@ struct Halt {
 
 /// @brief Compares two data registers and updates the status register flags.
 struct Cmp {
-  uint8_t op1;
-  uint8_t op2;
+  uint8_t op1_;
+  uint8_t op2_;
   bool operator==(const Cmp &) const = default;
 };
 
 /// @brief Jumps to an address held in a register, if a condition is met.
 /// @note For an unconditional jump, Condition is encoded as an Always value.
 struct Jmp {
-  Condition condition;
-  uint8_t address;
+  Condition condition_;
+  uint8_t address_;
   bool operator==(const Jmp &) const = default;
 };
 
 /// @brief Loads a memory value into a register.
 struct Load {
-  uint8_t reg;
-  uint8_t addr;
+  uint8_t reg_;
+  uint8_t addr_;
   bool operator==(const Load &) const = default;
 };
 
 /// @brief Stores a register value into memory.
 struct Store {
-  uint8_t reg;
-  uint8_t addr;
+  uint8_t reg_;
+  uint8_t addr_;
   bool operator==(const Store &) const = default;
 };
 
 /// @brief Adds two registers and stores the result in a third register,
 /// updating flags.
 struct Add {
-  uint8_t dst;
-  uint8_t src1;
-  uint8_t src2;
+  uint8_t dst_;
+  uint8_t src1_;
+  uint8_t src2_;
   bool operator==(const Add &) const = default;
 };
 
 /// @brief Subtracts one register from another and stores the result in a third
 /// register, updating flags.
 struct Sub {
-  uint8_t dst;
-  uint8_t src1;
-  uint8_t src2;
+  uint8_t dst_;
+  uint8_t src1_;
+  uint8_t src2_;
   bool operator==(const Sub &) const = default;
 };
 

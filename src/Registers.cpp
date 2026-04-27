@@ -2,6 +2,7 @@
 
 #include "zorita/Error.hpp"
 
+#include <algorithm>
 #include <cassert>
 #include <fmt/format.h>
 
@@ -14,11 +15,11 @@ Registers::Registers(const std::vector<uint16_t> &rx) {
     throw RegistersError{fmt::format(
         "invalid rx: size of vector is bigger than {}", rx_.size())};
   }
-  std::copy(rx.begin(), rx.end(), rx_.begin());
+  std::ranges::copy(rx, rx_.begin());
 }
 
 uint16_t Registers::rx(uint8_t index) const {
-  assert(index < NUM_DATA_REGISTERS);
+  assert(index < num_data_registers);
   return rx_[index];
 }
 
@@ -27,7 +28,7 @@ uint16_t Registers::ip() const { return ip_; }
 StatusRegister &Registers::st() { return st_; }
 
 void Registers::set_rx(uint8_t index, uint16_t value) {
-  assert(index < NUM_DATA_REGISTERS);
+  assert(index < num_data_registers);
   rx_[index] = value;
 }
 
