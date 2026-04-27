@@ -1,5 +1,5 @@
-#include "zorita/Error.hpp"
 #include "zorita/Registers.hpp"
+#include "zorita/Error.hpp"
 
 #include <fmt/format.h>
 #include <gmock/gmock.h>
