@@ -26,6 +26,10 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_compile_options(${PROJECT_NAME}-lib PRIVATE
         -Wall -Wextra -Werror -Wfatal-errors
     )
+elseif(MSVC)
+    target_compile_options(${PROJECT_NAME}-lib PRIVATE
+        /WX
+    )
 else()
     message(SEND_ERROR "Unknown compiler!")
 endif()
