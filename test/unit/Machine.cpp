@@ -69,16 +69,16 @@ protected:
 
       // Code section
       0x2400, //   cmp n, 0
-      0x4080, //   jz ret                  ; jmp ret if n == 0
+      0x4080, //   je ret                  ; jmp ret if n == 0
       0xb002, //   add lf[1], 0, 1         ; lf[1] = 1
       0x2420, //   cmp n, 1
-      0x4080, //   jz ret                  ; jmp ret if n == 1
+      0x4080, //   je ret                  ; jmp ret if n == 1
               // loop:
       0xacc2, //   add i, i, 1             ; i++
       0x24c0, //   cmp n, i
       0x4080, //   je ret                  ; jmp ret if n == i
       0xaef0, //   add lf[0], lf[0], lf[1] ; lf[0] = fib(i)
-      0x46a0, //   je err                  ; jmp err if overflow
+      0x46a0, //   jv err                  ; jmp err if overflow
       0xacc2, //   add i, i, 1             ; i++
       0x24c0, //   cmp n, i
       0x4080, //   je ret                  ; jmp ret if n == i
@@ -122,12 +122,12 @@ TEST_F(FibonacciTest, fib25) {
               testing::ThrowsMessage<DecoderError>("invalid instruction"));
 }
 
-// Sum a list of size int16_t values starting at memory position 2.
+// Sum a list of int16_t values.
 //   The list can have a maximum of 10 elements.
 //   Use memory.write(pos, val) to initialize the list of values.
 //   Where: pos can have a value between 2 and 11.
 // Parameters: size is passed in memory[2].
-//   Use memory.write(2, val) to initialize size to a value between 0 and 10.
+//   Use memory.write(2, val) to initialize the size to a value between 0 and 10.
 // Return: result in R10.
 class AccumulatorTest : public ::testing::Test {
 protected:
@@ -161,20 +161,20 @@ protected:
       0x0000, //   values[9]
 
       // Code section
-      0x6660, //   load size, size       ; r3 = memory[r3] = size
-      0x2640, //   cmp size, 10          ; cmp r3, r2
-      0x5ae0, //   jg err                ; jg r7 (GreaterThan=13)
-      0x2600, //   cmp size, 0           ; cmp r3, r0
-      0x40c0, //   jz ret                ; jz r6
+      0x6660, //   load size, size   ; size = *size
+      0x2640, //   cmp size, 10
+      0x5ae0, //   jg err            ; jmp err if size > 10
+      0x2600, //   cmp size, 0
+      0x40c0, //   je ret            ; jmp ret if size == 0
               // loop:
-      0x7280, //   load val, vptr        ; r9 = memory[r4]
-      0xb552, //   add acc, acc, val     ; r10 = r10 + r9
-      0x46e0, //   jv err                ; jv r7
-      0x3060, //   cmp i, size           ; cmp r8, r3
-      0x40c0, //   jz ret                ; jz r6
-      0xb102, //   add i, i, 1           ; r8 = r8 + r1
-      0xa882, //   add vptr, vptr, 1     ; r4 = r4 + r1
-      0x4ea0, //   j loop                ; j r5 (Always=7)
+      0x7280, //   load val, vptr    ; val = *vptr
+      0xb552, //   add acc, acc, val ; acc += val
+      0x46e0, //   jv err            ; jmp err if overflow
+      0x3060, //   cmp i, size
+      0x40c0, //   je ret            ; jmp ret if i == size
+      0xb102, //   add i, i, 1       ; i++
+      0xa882, //   add vptr, vptr, 1 ; vptr++
+      0x4ea0, //   j loop            ; jmp loop
               // ret:
       0x0000, //   halt
               // err:
