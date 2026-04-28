@@ -65,21 +65,21 @@ protected:
       // Code section
       0x2400, //   cmp n, 0
       0x4080, //   jz ret                  ; jmp ret if n == 0
-      0xAE02, //   add lf[1], 0, 1         ; lf[1] = 1
+      0xae02, //   add lf[1], 0, 1         ; lf[1] = 1
       0x2420, //   cmp n, 1
       0x4080, //   jz ret                  ; jmp ret if n == 1
               // loop:
-      0xAAA2, //   add i, i, 1             ; i++
-      0x24A0, //   cmp n, i
+      0xaaa2, //   add i, i, 1             ; i++
+      0x24a0, //   cmp n, i
       0x4080, //   jz ret                  ; jmp ret if n == i
-      0xACCE, //   add lf[0], lf[0], lf[1] ; lf[0] = fib(i)
-      0xAAA2, //   add i, i, 1             ; i++
-      0x24A0, //   cmp n, i
+      0xacce, //   add lf[0], lf[0], lf[1] ; lf[0] = fib(i)
+      0xaaa2, //   add i, i, 1             ; i++
+      0x24a0, //   cmp n, i
       0x4080, //   jz ret                  ; jmp ret if n == i
-      0xAECE, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(i)
-      0x4E60, //   j loop                  ; jmp loop
+      0xaece, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(i)
+      0x4e60, //   j loop                  ; jmp loop
               // ret:
-      0xAECE, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(n)
+      0xaece, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(n)
       0x0000, //   halt
   };
   Machine machine{program, Registers{rx}};
