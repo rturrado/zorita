@@ -38,23 +38,23 @@ TEST(MachineTest, run_fib24) {
       0x0011, //   ret label
 
       // Code section
-      0x2800, //   cmp n, 0
-      0x4100, //   jz ret                  ; jmp ret if n == 0
-      0xBC10, //   add lf[1], 0, 1         ; lf[1] = 1
-      0x2880, //   cmp n, 1
-      0x4100, //   jz ret                  ; jmp ret if n == 1
+      0x2400, //   cmp n, 0
+      0x4080, //   jz ret                  ; jmp ret if n == 0
+      0xAE02, //   add lf[1], 0, 1         ; lf[1] = 1
+      0x2420, //   cmp n, 1
+      0x4080, //   jz ret                  ; jmp ret if n == 1
               // loop:
-      0xB690, //   add i, i, 1             ; i++
-      0x2A80, //   cmp n, i
-      0x4100, //   jz ret                  ; jmp ret if n == i
-      0xBB70, //   add lf[0], lf[0], lf[1] ; lf[0] = fib(i)
-      0xB690, //   add i, i, 1             ; i++
-      0x2A80, //   cmp n, i
-      0x4100, //   jz ret                  ; jmp ret if n == i
-      0xBF70, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(i)
-      0x4EC0, //   j loop                  ; jmp loop
+      0xAAA2, //   add i, i, 1             ; i++
+      0x24A0, //   cmp n, i
+      0x4080, //   jz ret                  ; jmp ret if n == i
+      0xACCE, //   add lf[0], lf[0], lf[1] ; lf[0] = fib(i)
+      0xAAA2, //   add i, i, 1             ; i++
+      0x24A0, //   cmp n, i
+      0x4080, //   jz ret                  ; jmp ret if n == i
+      0xAECE, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(i)
+      0x4E60, //   j loop                  ; jmp loop
               // ret:
-      0xBF70, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(n)
+      0xAECE, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(n)
       0x0000, //   halt
   };
   Machine machine{program, Registers{rx}};
@@ -74,10 +74,10 @@ TEST(MachineTest, run_swap) {
       0x00bb, // value B
 
       // Code section
-      0x6800, // load r2, r0  ; load r2 with value A from memory
-      0x6C80, // load r3, r1  ; load r3 with value B from memory
-      0x8C00, // store r3, r0 ; store value B to memory (where value A was)
-      0x8880, // store r2, r1 ; store value A to memory (where value B was)
+      0x6400, // load r2, r0  ; load r2 with value A from memory
+      0x6620, // load r3, r1  ; load r3 with value B from memory
+      0x8600, // store r3, r0 ; store value B to memory (where value A was)
+      0x8420, // store r2, r1 ; store value A to memory (where value B was)
       0x0000, // halt
   };
   Machine machine{program, Registers{rx}};
@@ -100,7 +100,7 @@ TEST(MachineTest, step_halt) {
 TEST(MachineTest, step_cmp) {
   std::vector<uint16_t> program{
       0x0001, // ip = 0x0001
-      0x2080, // cmp r0, r1
+      0x2020, // cmp r0, r1
   };
   Machine machine{program};
 
@@ -407,7 +407,7 @@ TEST(MachineTest, step_load) {
   std::vector<uint16_t> program{
       0x0002, // ip = 0x0002
       0x1234, // address to be read from
-      0x6080, // load r0, r1
+      0x6020, // load r0, r1
   };
   Machine machine{program};
 
@@ -423,7 +423,7 @@ TEST(MachineTest, step_store) {
   std::vector<uint16_t> program{
       0x0002, // ip = 0x0002
       0x0000, // address to be written to
-      0x8080, // store r0, r1
+      0x8020, // store r0, r1
   };
   Machine machine{program};
 
@@ -439,7 +439,7 @@ TEST(MachineTest, step_store) {
 TEST(MachineTest, step_add) {
   std::vector<uint16_t> program{
       0x0001, // ip = 0x0001
-      0xa010, // add r0, r0, r1
+      0xa002, // add r0, r0, r1
   };
   Machine machine{program};
 
@@ -492,7 +492,7 @@ TEST(MachineTest, step_add) {
 TEST(MachineTest, step_sub) {
   std::vector<uint16_t> program{
       0x0001, // ip = 0x0001
-      0xc010, // sub r0, r0, r1
+      0xc002, // sub r0, r0, r1
   };
   Machine machine{program};
 

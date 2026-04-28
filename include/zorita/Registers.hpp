@@ -11,8 +11,8 @@ namespace zorita {
 
 using DataRegisters = std::array<uint16_t, num_data_registers>;
 
-/// @brief The machine registers: data registers (R0 to R7), instruction pointer
-/// (IP), and status register (ST).
+/// @brief The machine registers: data registers (R0 to R15), instruction
+/// pointer (IP), and status register (ST).
 class Registers {
 public:
   /// @brief Initializes all registers to zero.
