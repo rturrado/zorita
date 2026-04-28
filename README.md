@@ -4,8 +4,12 @@ A RISC machine implementation.
 Zorita means Little (Reduced) in the Asturian dialect.
 
 ## Documentation
-For the machine model and instruction set, see the
-[Machine Model and Instruction Set](docs/pages/machine_model_and_instruction_set.md) document.
+
+[Machine model](docs/machine_model.md),
+[Instruction set](docs/instruction_set.md),
+[Code design](docs/code_design.md), and
+[Code examples](docs/code_examples.md)
+documents can be found in the `docs` folder.
 
 ## Requirements
 
@@ -35,8 +39,7 @@ conan build . -pr:a=conan/profiles/tests-debug-gcc-linux-x64 -b missing
 ## Run
 
 Zorita doesn't build as an executable.
-It just builds as a library.
-And the library can only be exercised via the tests.
+It just builds as a library which is then exercised via the tests.
 
 ## Test
 
