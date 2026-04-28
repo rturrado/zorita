@@ -17,14 +17,10 @@ TEST_F(RegistersTest, default_construtor) {
     EXPECT_EQ(registers_.rx(i), 0);
   }
   EXPECT_EQ(registers_.ip(), 0);
-  EXPECT_FALSE(registers_.st().zf());
-  EXPECT_FALSE(registers_.st().nf());
-  EXPECT_FALSE(registers_.st().cf());
-  EXPECT_FALSE(registers_.st().of());
+  EXPECT_EQ(registers_.st().to_uint16(), 0);
 }
 
-TEST(Registers, construct_from_data) {
-  // Data is smaller than RX
+TEST(Registers, construct_from_valid_data) {
   std::vector<uint16_t> rx{0, 1, 2, 3};
   Registers registers{rx};
   for (uint8_t i = 0; i < rx.size(); ++i) {
@@ -33,8 +29,9 @@ TEST(Registers, construct_from_data) {
   for (uint8_t i = rx.size(); i < num_data_registers; ++i) {
     EXPECT_EQ(registers.rx(i), 0);
   }
+}
 
-  // Invalid data
+TEST(Registers, construct_from_invalid_data) {
   std::vector<uint16_t> invalid_rx(num_data_registers + 1, 0x0000);
   EXPECT_THAT(
       [&]() { Registers{invalid_rx}; },
@@ -55,12 +52,9 @@ TEST_F(RegistersTest, ip) {
 }
 
 TEST_F(RegistersTest, set_st) {
-  registers_.set_st(0x05); // ZF=1, CF=1
+  registers_.set_st(0x05); // OF=0, CF=1, NF=0, ZF=1
   auto &st = registers_.st();
-  EXPECT_TRUE(st.zf());
-  EXPECT_FALSE(st.nf());
-  EXPECT_TRUE(st.cf());
-  EXPECT_FALSE(st.of());
+  EXPECT_EQ(st.to_uint16(), 0x05);
 }
 
 } // namespace zorita
