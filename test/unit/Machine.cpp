@@ -28,7 +28,7 @@ TEST(MachineTest, run_swap) {
   };
   std::vector<uint16_t> program{
       // Data section
-      0x0003, // code section
+      0x0003, // address of code section
       0x00aa, // value A
       0x00bb, // value B
 
@@ -45,22 +45,27 @@ TEST(MachineTest, run_swap) {
   EXPECT_EQ(machine.memory().read(0x0002), 0x00aa);
 }
 
+// Calculate fibonacci(n).
+// Parameters: n is passed in R2.
+//   Use machine.rx(2, val) to initialize R2 to val.
+// Return: result in R8.
 class FibonacciTest : public ::testing::Test {
 protected:
-  std::vector<uint16_t> rx{
-      0x0000, // r0 = 0
-      0x0001, // r1 = 1
+  std::vector<uint16_t> rx_{
+      0x0000, // r0 = 0 constant
+      0x0001, // r1 = 1 constant
       0x0000, // r2 = n
-      0x0006, // r3 = loop label
-      0x0011, // r4 = ret label
-      0x0013, // r5 = err label
-      0x0001, // r6 = i = 1
-      0x0000, // r7 = lf[0], circular buffer with
-      0x0000, // r8 = lf[1], fib(i-1) and fib(i-2)
+      0x0006, // r3 = address of loop label
+      0x0011, // r4 = address of ret label
+      0x0013, // r5 = address of err label
+      0x0001, // r6 = i
+              // Circular buffer with fib(i-1) and fib(i-2)
+      0x0000, // r7 = lf[0]
+      0x0000, // r8 = lf[1]
   };
-  std::vector<uint16_t> program{
+  std::vector<uint16_t> program_{
       // Data section
-      0x0001, //   code section
+      0x0001, //   address of code section
 
       // Code section
       0x2400, //   cmp n, 0
@@ -71,12 +76,12 @@ protected:
               // loop:
       0xacc2, //   add i, i, 1             ; i++
       0x24c0, //   cmp n, i
-      0x4080, //   jz ret                  ; jmp ret if n == i
+      0x4080, //   je ret                  ; jmp ret if n == i
       0xaef0, //   add lf[0], lf[0], lf[1] ; lf[0] = fib(i)
-      0x46a0, //   jv err                  ; jmp err if overflow
+      0x46a0, //   je err                  ; jmp err if overflow
       0xacc2, //   add i, i, 1             ; i++
       0x24c0, //   cmp n, i
-      0x4080, //   jz ret                  ; jmp ret if n == i
+      0x4080, //   je ret                  ; jmp ret if n == i
       0xb0f0, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(i)
       0x46a0, //   jv err                  ; jmp err if overflow
       0x4e60, //   j loop                  ; jmp loop
@@ -85,38 +90,121 @@ protected:
       0x0000, //   halt
               // err:
   };
-  Machine machine{program, Registers{rx}};
+  Machine machine_{program_, Registers{rx_}};
 };
 
 TEST_F(FibonacciTest, fib0) {
-  machine.run();
-  EXPECT_EQ(machine.rx(8), 0);
+  machine_.run();
+  EXPECT_EQ(machine_.rx(8), 0);
 }
 
 TEST_F(FibonacciTest, fib1) {
-  machine.set_rx(2, 1);
-  machine.run();
-  EXPECT_EQ(machine.rx(8), 1);
+  machine_.set_rx(2, 1);
+  machine_.run();
+  EXPECT_EQ(machine_.rx(8), 1);
 }
 
 TEST_F(FibonacciTest, fib10) {
-  machine.set_rx(2, 10);
-  machine.run();
-  EXPECT_EQ(machine.rx(8), 55);
+  machine_.set_rx(2, 10);
+  machine_.run();
+  EXPECT_EQ(machine_.rx(8), 55);
 }
 
 TEST_F(FibonacciTest, fib24) {
-  machine.set_rx(2, 24);
-  machine.run();
-  EXPECT_EQ(machine.rx(8), 46368);
+  machine_.set_rx(2, 24);
+  machine_.run();
+  EXPECT_EQ(machine_.rx(8), 46368);
 }
 
 TEST_F(FibonacciTest, fib25) {
-  machine.set_rx(2, 25);
-  EXPECT_THAT([&]() { machine.run(); },
+  machine_.set_rx(2, 25);
+  EXPECT_THAT([&]() { machine_.run(); },
               testing::ThrowsMessage<DecoderError>("invalid instruction"));
 }
 
+// Sum a list of size int16_t values starting at memory position 2.
+//   The list can have a maximum of 10 elements.
+//   Use memory.write(pos, val) to initialize the list of values.
+//   Where: pos can have a value between 2 and 11.
+// Parameters: size is passed in memory[2].
+//   Use memory.write(2, val) to initialize size to a value between 0 and 10.
+// Return: result in R10.
+class AccumulatorTest : public ::testing::Test {
+protected:
+  std::vector<uint16_t> rx_{
+      0x0000, // r0 = 0 constant
+      0x0001, // r1 = 1 constant
+      0x000a, // r2 = 10 constant
+      0x0001, // r3 = initialized to the address of size;
+              //      later reused as size
+      0x0002, // r4 = the address of the list of values
+      0x0011, // r5 = address of loop label
+      0x0019, // r6 = address of ret label
+      0x001a, // r7 = address of err label
+      0x0001, // r8 = i
+      0x0000, // r9 = val
+      0x0000, // r10 = acc
+  };
+  std::vector<uint16_t> program_{
+      // Data section
+      0x000c, //   address of code section
+      0x0004, //   size of values
+      0x1000, //   values[0]
+      0x2000, //   values[1]
+      0x4000, //   values[2]
+      0x7fff, //   values[3]
+      0x0000, //   values[4]
+      0x0000, //   values[5]
+      0x0000, //   values[6]
+      0x0000, //   values[7]
+      0x0000, //   values[8]
+      0x0000, //   values[9]
+
+      // Code section
+      0x6660, //   load size, size       ; r3 = memory[r3] = size
+      0x2640, //   cmp size, 10          ; cmp r3, r2
+      0x5ae0, //   jg err                ; jg r7 (GreaterThan=13)
+      0x2600, //   cmp size, 0           ; cmp r3, r0
+      0x40c0, //   jz ret                ; jz r6
+              // loop:
+      0x7280, //   load val, vptr        ; r9 = memory[r4]
+      0xb552, //   add acc, acc, val     ; r10 = r10 + r9
+      0x46e0, //   jv err                ; jv r7
+      0x3060, //   cmp i, size           ; cmp r8, r3
+      0x40c0, //   jz ret                ; jz r6
+      0xb102, //   add i, i, 1           ; r8 = r8 + r1
+      0xa882, //   add vptr, vptr, 1     ; r4 = r4 + r1
+      0x4ea0, //   j loop                ; j r5 (Always=7)
+              // ret:
+      0x0000, //   halt
+              // err:
+  };
+  Machine machine_{program_, Registers{rx_}};
+};
+
+TEST_F(AccumulatorTest, size_of_values_11) {
+  machine_.memory().write(1, 11); // size of values = 11
+  EXPECT_THAT([&]() { machine_.run(); },
+              testing::ThrowsMessage<DecoderError>("invalid instruction"));
+}
+
+TEST_F(AccumulatorTest, size_of_values_0) {
+  machine_.memory().write(1, 0); // size of values = 0
+  machine_.run();
+  EXPECT_EQ(machine_.rx(10), 0);
+}
+
+TEST_F(AccumulatorTest, valid_sum) {
+  machine_.memory().write(1, 2); // size of values = 2
+  machine_.run();
+  EXPECT_EQ(machine_.rx(10), 0x3000);
+}
+
+TEST_F(AccumulatorTest, sum_overflows) {
+  // size of values = 4
+  EXPECT_THAT([&]() { machine_.run(); },
+              testing::ThrowsMessage<DecoderError>("invalid instruction"));
+}
 
 TEST(MachineTest, step_halt) {
   std::vector<uint16_t> program{
