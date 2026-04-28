@@ -1,10 +1,8 @@
 # Zorita
-
 A RISC machine implementation.
 Zorita means Little (Reduced) in the Asturian dialect.
 
 ## Documentation
-
 [Machine model](docs/machine_model.md),
 [Instruction set](docs/instruction_set.md),
 [Code design](docs/code_design.md), and
@@ -12,7 +10,6 @@ Zorita means Little (Reduced) in the Asturian dialect.
 documents can be found in the `docs` folder.
 
 ## Requirements
-
 - A C++20-capable compiler:
   - GCC >= 10
   - Clang >= 13
@@ -24,7 +21,6 @@ documents can be found in the `docs` folder.
   - `conan` >= 2.0
 
 ## Build
-
 This version of Zorita can only be compiled via the Conan package manager.
 You will need to create a default profile before using it for the first time.
 The installation of dependencies, as well as the compilation, can be done in one go.
@@ -37,7 +33,6 @@ conan build . -pr:a=conan/profiles/tests-debug-gcc-linux-x64 -b missing
 ```
 
 ### Profiles
-
 A group of predefined profiles is provided under the `conan/profiles` folder.
 They follow the `[tests-]build_type[-compiler-os-arch][-shared]` naming convention:
 
@@ -51,18 +46,15 @@ They follow the `[tests-]build_type[-compiler-os-arch][-shared]` naming conventi
 All the profiles set the C++ standard to 20.
 
 ## Run
-
 Zorita doesn't build as an executable.
 It just builds as a library which is then exercised via the tests.
 
 ## Test
-
 ```
 ./build/Debug/test/unit/zorita-unit-test
 ```
 
 ## Docker
-
 Alternatively, if you have `docker` installed, you can build directly
 (without installing any required dependency):
 
