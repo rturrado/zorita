@@ -194,10 +194,26 @@ TEST_F(AccumulatorTest, size_of_values_0) {
   EXPECT_EQ(machine_.rx(10), 0);
 }
 
-TEST_F(AccumulatorTest, valid_sum) {
+TEST_F(AccumulatorTest, size_of_values_2) {
   machine_.memory().write(1, 2); // size of values = 2
   machine_.run();
   EXPECT_EQ(machine_.rx(10), 0x3000);
+}
+
+TEST_F(AccumulatorTest, size_of_values_10) {
+  machine_.memory().write(1, 10); // size of values = 10
+  machine_.memory().write(5, 0x0fff); // values[3] = 0x0fff
+  machine_.run();
+  EXPECT_EQ(machine_.rx(10), 0x7fff);
+}
+
+TEST_F(AccumulatorTest, sum_negative_values) {
+  machine_.memory().write(1, 3); // size of values = 3
+  machine_.memory().write(2, 0xfff0); // values[0] = -16
+  machine_.memory().write(3, 0x0020); // values[1] = 32
+  machine_.memory().write(4, 0xffc0); // values[2] = -64
+  machine_.run();
+  EXPECT_EQ(machine_.rx(10), 0xffd0);  // -48
 }
 
 TEST_F(AccumulatorTest, sum_overflows) {
