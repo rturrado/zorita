@@ -127,7 +127,8 @@ TEST_F(FibonacciTest, fib25) {
 //   Use memory.write(pos, val) to initialize the list of values.
 //   Where: pos can have a value between 2 and 11.
 // Parameters: size is passed in memory[2].
-//   Use memory.write(2, val) to initialize the size to a value between 0 and 10.
+//   Use memory.write(2, val) to initialize the size to a value between 0
+//   and 10.
 // Return: result in R10.
 class AccumulatorTest : public ::testing::Test {
 protected:
@@ -201,19 +202,19 @@ TEST_F(AccumulatorTest, size_of_values_2) {
 }
 
 TEST_F(AccumulatorTest, size_of_values_10) {
-  machine_.memory().write(1, 10); // size of values = 10
+  machine_.memory().write(1, 10);     // size of values = 10
   machine_.memory().write(5, 0x0fff); // values[3] = 0x0fff
   machine_.run();
   EXPECT_EQ(machine_.rx(10), 0x7fff);
 }
 
 TEST_F(AccumulatorTest, sum_negative_values) {
-  machine_.memory().write(1, 3); // size of values = 3
+  machine_.memory().write(1, 3);      // size of values = 3
   machine_.memory().write(2, 0xfff0); // values[0] = -16
   machine_.memory().write(3, 0x0020); // values[1] = 32
   machine_.memory().write(4, 0xffc0); // values[2] = -64
   machine_.run();
-  EXPECT_EQ(machine_.rx(10), 0xffd0);  // -48
+  EXPECT_EQ(machine_.rx(10), 0xffd0); // -48
 }
 
 TEST_F(AccumulatorTest, sum_overflows) {
