@@ -24,7 +24,7 @@ TEST(MachineTest, run_fib24) {
   std::vector<uint16_t> rx{
       0x0000, // r0 = 0
       0x0001, // r1 = 1
-      0x0018, // r2 = n
+      0x0018, // r2 = n = 24
       0x0008, // r3 = loop label
       0x0011, // r4 = ret label
       0x0001, // r5 = i = 1
@@ -60,6 +60,30 @@ TEST(MachineTest, run_fib24) {
   Machine machine{program, Registers{rx}};
   machine.run();
   EXPECT_EQ(machine.rx(7), 46368);
+}
+
+TEST(MachineTest, run_swap) {
+  std::vector<uint16_t> rx{
+      0x0001, // r0 = address of value A
+      0x0002, // r1 = address of value B
+  };
+  std::vector<uint16_t> program{
+      // Data section
+      0x0003, // code section
+      0x00aa, // value A
+      0x00bb, // value B
+
+      // Code section
+      0x6800, // load r2, r0  ; load r2 with value A from memory
+      0x6C80, // load r3, r1  ; load r3 with value B from memory
+      0x8C00, // store r3, r0 ; store value B to memory (where value A was)
+      0x8880, // store r2, r1 ; store value A to memory (where value B was)
+      0x0000, // halt
+  };
+  Machine machine{program, Registers{rx}};
+  machine.run();
+  EXPECT_EQ(machine.memory().read(0x0001), 0x00bb);
+  EXPECT_EQ(machine.memory().read(0x0002), 0x00aa);
 }
 
 TEST(MachineTest, step_halt) {

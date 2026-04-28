@@ -40,39 +40,38 @@ protected:
       0x2 << sub_src1_opcode_begin | 0x3 << sub_src2_opcode_begin};
   Sub sub_instruction_{.dst_ = 0x1, .src1_ = 0x2, .src2_ = 0x3};
   uint16_t invalid_opcode_{0x7 << instruction_opcode_begin};
-  Decoder decoder;
 };
 
 TEST_F(DecoderTest, decode) {
-  auto instruction = zorita::Decoder::decode(halt_opcode_);
+  auto instruction = Decoder::decode(halt_opcode_);
   EXPECT_TRUE(std::holds_alternative<Halt>(instruction));
   EXPECT_EQ(std::get<Halt>(instruction), halt_instruction_);
 
-  instruction = zorita::Decoder::decode(cmp_opcode_);
+  instruction = Decoder::decode(cmp_opcode_);
   EXPECT_TRUE(std::holds_alternative<Cmp>(instruction));
   EXPECT_EQ(std::get<Cmp>(instruction), cmp_instruction_);
 
-  instruction = zorita::Decoder::decode(jmp_opcode_);
+  instruction = Decoder::decode(jmp_opcode_);
   EXPECT_TRUE(std::holds_alternative<Jmp>(instruction));
   EXPECT_EQ(std::get<Jmp>(instruction), jmp_instruction_);
 
-  instruction = zorita::Decoder::decode(load_opcode_);
+  instruction = Decoder::decode(load_opcode_);
   EXPECT_TRUE(std::holds_alternative<Load>(instruction));
   EXPECT_EQ(std::get<Load>(instruction), load_instruction_);
 
-  instruction = zorita::Decoder::decode(store_opcode_);
+  instruction = Decoder::decode(store_opcode_);
   EXPECT_TRUE(std::holds_alternative<Store>(instruction));
   EXPECT_EQ(std::get<Store>(instruction), store_instruction_);
 
-  instruction = zorita::Decoder::decode(add_opcode_);
+  instruction = Decoder::decode(add_opcode_);
   EXPECT_TRUE(std::holds_alternative<Add>(instruction));
   EXPECT_EQ(std::get<Add>(instruction), add_instruction_);
 
-  instruction = zorita::Decoder::decode(sub_opcode_);
+  instruction = Decoder::decode(sub_opcode_);
   EXPECT_TRUE(std::holds_alternative<Sub>(instruction));
   EXPECT_EQ(std::get<Sub>(instruction), sub_instruction_);
 
-  EXPECT_THAT([&]() { decoder.decode(invalid_opcode_); },
+  EXPECT_THAT([&]() { Decoder::decode(invalid_opcode_); },
               testing::ThrowsMessage<DecoderError>("invalid instruction"));
 }
 
