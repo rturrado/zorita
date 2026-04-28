@@ -36,6 +36,20 @@ conan profile detect
 conan build . -pr:a=conan/profiles/tests-debug-gcc-linux-x64 -b missing
 ```
 
+### Profiles
+
+A group of predefined profiles is provided under the `conan/profiles` folder.
+They follow the `[tests-]build_type[-compiler-os-arch][-shared]` naming convention:
+
+- `tests`: if tests are being built.
+- `build_type`: debug, release.
+- `compiler`: apple-clang, clang, gcc, msvc.
+- `os`: linux, macos, windows.
+- `arch`: arm64, x64.
+- `shared`: if the library is being built in shared mode.
+
+All the profiles set the C++ standard to 20.
+
 ## Run
 
 Zorita doesn't build as an executable.
