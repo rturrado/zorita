@@ -64,7 +64,9 @@ TEST_F(StatusRegisterTest, set_flag) {
   st_.set_flag(Flag::Zero, true);
   EXPECT_TRUE(st_.zf());
   EXPECT_THAT(
-      [&]() { st_.set_flag(Flag{0xff}, true); },
+      // clang-format off
+      [&]() { st_.set_flag(Flag{0xff}, true); }, // NOLINT(clang-analyzer-optin.core.EnumCastOutOfRange)
+      // clang-format on
       testing::ThrowsMessage<StatusRegisterError>("invalid flag index"));
 }
 

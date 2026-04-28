@@ -9,7 +9,6 @@ namespace zorita {
 
 class ConditionTest : public ::testing::Test {
 protected:
-  void SetUp() override {}
   //  3  2  1  0  index within the status register
   // OF CF NF ZF  flag
   StatusRegister st0x0_{0x00}; // ZF=0 NF=0 CF=0 OF=0

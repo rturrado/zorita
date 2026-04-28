@@ -12,7 +12,6 @@ using namespace instruction;
 
 class DecoderTest : public ::testing::Test {
 protected:
-  void SetUp() override {}
   uint16_t halt_opcode_{0x0 << instruction_opcode_begin};
   Halt halt_instruction_{};
   uint16_t cmp_opcode_{0x1 << instruction_opcode_begin |
