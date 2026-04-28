@@ -9,21 +9,21 @@ The Fibonacci example calculates `fibonacci(n)`.
   For every iteration, `fibonacci(i)` and `fibonacci(i+1)` are calculated
   and stored in `lf[0]` and `lf[1]`, a circular buffer.
 - The program overflows when `n` is greater than 24,
-  because the Fibonnaci number doesn't fit in a 16-bit word.
+  because the Fibonacci number doesn't fit in a 16-bit word.
 
 ### Registers
 
 | Register | Value  | Description             |
-|----------|--------|-------------------------| 
- | R0      | 0x0000 | Constant 0              | 
- | R1      | 0x0001 | Constant 1              |
- | R2      | 0x0000 | `n`                     | 
- | R3      | 0x0006 | Address of `loop` label |
- | R4      | 0x0011 | Address of `ret` label  |
- | R5      | 0x0013 | Address of `err` label  |
- | R6      | 0x0001 | `i`                     |
- | R7      | 0x0000 | `lf[0]`                 |
- | R8      | 0x0000 | `lf[1]`                 |
+|----------|--------|-------------------------|
+| R0       | 0x0000 | Constant 0              |
+| R1       | 0x0001 | Constant 1              |
+| R2       | 0x0000 | `n`                     |
+| R3       | 0x0006 | Address of `loop` label |
+| R4       | 0x0011 | Address of `ret` label  |
+| R5       | 0x0013 | Address of `err` label  |
+| R6       | 0x0001 | `i`                     |
+| R7       | 0x0000 | `lf[0]`                 |
+| R8       | 0x0000 | `lf[1]`                 |
 
 ### Memory
 
@@ -59,7 +59,7 @@ The Fibonacci example calculates `fibonacci(n)`.
 
 ## Accumulator
 The Accumulator example sums a list of `int16_t` values.
-The `size` of the list is passed in the memory position 2, and the result is stored in R10.
+The `size` of the list is passed in the memory position 1, and the result is stored in R10.
 The list can have a maximum of 10 elements.
 - If `size` is either 0 or greater than 10, the program returns quickly
   (with a result of 0 or an error, respectively).

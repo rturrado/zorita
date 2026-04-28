@@ -126,8 +126,8 @@ TEST_F(FibonacciTest, fib25) {
 //   The list can have a maximum of 10 elements.
 //   Use memory.write(pos, val) to initialize the list of values.
 //   Where: pos can have a value between 2 and 11.
-// Parameters: size is passed in memory[2].
-//   Use memory.write(2, val) to initialize the size to a value between 0
+// Parameters: size is passed in memory[1].
+//   Use memory.write(1, val) to initialize the size to a value between 0
 //   and 10.
 // Return: result in R10.
 class AccumulatorTest : public ::testing::Test {
