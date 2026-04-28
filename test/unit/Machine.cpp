@@ -1,4 +1,5 @@
 #include "zorita/Machine.hpp"
+#include "zorita/Error.hpp"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -50,63 +51,72 @@ protected:
       0x0000, // r0 = 0
       0x0001, // r1 = 1
       0x0000, // r2 = n
-      0x0008, // r3 = loop label
+      0x0006, // r3 = loop label
       0x0011, // r4 = ret label
-      0x0001, // r5 = i = 1
-      0x0000, // r6 = lf[0], circular buffer with
-      0x0000, // r7 = lf[1], fib(i-1) and fib(i-2)
+      0x0013, // r5 = err label
+      0x0001, // r6 = i = 1
+      0x0000, // r7 = lf[0], circular buffer with
+      0x0000, // r8 = lf[1], fib(i-1) and fib(i-2)
   };
   std::vector<uint16_t> program{
       // Data section
-      0x0003, //   code section
-      0x0008, //   loop label
-      0x0011, //   ret label
+      0x0001, //   code section
 
       // Code section
       0x2400, //   cmp n, 0
       0x4080, //   jz ret                  ; jmp ret if n == 0
-      0xae02, //   add lf[1], 0, 1         ; lf[1] = 1
+      0xb002, //   add lf[1], 0, 1         ; lf[1] = 1
       0x2420, //   cmp n, 1
       0x4080, //   jz ret                  ; jmp ret if n == 1
               // loop:
-      0xaaa2, //   add i, i, 1             ; i++
-      0x24a0, //   cmp n, i
+      0xacc2, //   add i, i, 1             ; i++
+      0x24c0, //   cmp n, i
       0x4080, //   jz ret                  ; jmp ret if n == i
-      0xacce, //   add lf[0], lf[0], lf[1] ; lf[0] = fib(i)
-      0xaaa2, //   add i, i, 1             ; i++
-      0x24a0, //   cmp n, i
+      0xaef0, //   add lf[0], lf[0], lf[1] ; lf[0] = fib(i)
+      0x46a0, //   jv err                  ; jmp err if overflow
+      0xacc2, //   add i, i, 1             ; i++
+      0x24c0, //   cmp n, i
       0x4080, //   jz ret                  ; jmp ret if n == i
-      0xaece, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(i)
+      0xb0f0, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(i)
+      0x46a0, //   jv err                  ; jmp err if overflow
       0x4e60, //   j loop                  ; jmp loop
               // ret:
-      0xaece, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(n)
+      0xb0f0, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(n)
       0x0000, //   halt
+              // err:
   };
   Machine machine{program, Registers{rx}};
 };
 
 TEST_F(FibonacciTest, fib0) {
   machine.run();
-  EXPECT_EQ(machine.rx(7), 0);
+  EXPECT_EQ(machine.rx(8), 0);
 }
 
 TEST_F(FibonacciTest, fib1) {
   machine.set_rx(2, 1);
   machine.run();
-  EXPECT_EQ(machine.rx(7), 1);
+  EXPECT_EQ(machine.rx(8), 1);
 }
 
 TEST_F(FibonacciTest, fib10) {
   machine.set_rx(2, 10);
   machine.run();
-  EXPECT_EQ(machine.rx(7), 55);
+  EXPECT_EQ(machine.rx(8), 55);
 }
 
 TEST_F(FibonacciTest, fib24) {
   machine.set_rx(2, 24);
   machine.run();
-  EXPECT_EQ(machine.rx(7), 46368);
+  EXPECT_EQ(machine.rx(8), 46368);
 }
+
+TEST_F(FibonacciTest, fib25) {
+  machine.set_rx(2, 25);
+  EXPECT_THAT([&]() { machine.run(); },
+              testing::ThrowsMessage<DecoderError>("invalid instruction"));
+}
+
 
 TEST(MachineTest, step_halt) {
   std::vector<uint16_t> program{
