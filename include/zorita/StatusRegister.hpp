@@ -24,6 +24,9 @@ public:
   /// @brief Initializes data_ from value.
   StatusRegister(uint16_t value);
 
+  /// @brief Returns an uint16_t representation of the data.
+  [[nodiscard]] uint16_t to_uint16() const;
+
   /// @brief Returns true if the Zero flag is set.
   [[nodiscard]] bool zf() const;
   /// @brief Returns true if the Negative flag is set.
@@ -32,9 +35,6 @@ public:
   [[nodiscard]] bool cf() const;
   /// @brief Returns true if the Overflow flag is set.
   [[nodiscard]] bool of() const;
-
-  /// @brief Returns an uint16_t representation of the data.
-  [[nodiscard]] uint16_t to_uint16() const;
 
   /// @brief Sets the status register.
   /// @param value New status register value.
