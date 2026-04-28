@@ -29,3 +29,7 @@ CheckOptions:
     value: lower_case
   - key: readability-identifier-naming.VariableCase
     value: lower_case
+  - key: readability-identifier-length.IgnoredVariableNames
+    value: "rx|st"
+  - key: readability-identifier-length.IgnoredParameterNames
+    value: "rx|st"
