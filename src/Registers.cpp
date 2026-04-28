@@ -3,7 +3,6 @@
 #include "zorita/Error.hpp"
 
 #include <algorithm>
-#include <cassert>
 #include <fmt/format.h>
 
 namespace zorita {
@@ -18,19 +17,13 @@ Registers::Registers(const std::vector<uint16_t> &rx) {
   std::ranges::copy(rx, rx_.begin());
 }
 
-uint16_t Registers::rx(uint8_t index) const {
-  assert(index < num_data_registers);
-  return rx_[index];
-}
+uint16_t Registers::rx(uint8_t index) const { return rx_.at(index); }
 
 uint16_t Registers::ip() const { return ip_; }
 
 StatusRegister &Registers::st() { return st_; }
 
-void Registers::set_rx(uint8_t index, uint16_t value) {
-  assert(index < num_data_registers);
-  rx_[index] = value;
-}
+void Registers::set_rx(uint8_t index, uint16_t value) { rx_.at(index) = value; }
 
 void Registers::set_ip(uint16_t value) { ip_ = value; }
 

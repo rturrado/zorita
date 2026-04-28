@@ -9,7 +9,7 @@
 namespace zorita {
 
 /// @brief Execution state of the machine.
-enum class State {
+enum class State : uint8_t {
   Stopped,
   Running,
 };

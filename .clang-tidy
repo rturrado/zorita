@@ -1,4 +1,11 @@
 ---
+# -modernize-use-trailing-return-type:
+#    Code style preference.
+# -cppcoreguidelines-avoid-magic-numbers,
+# -readability-magic-numbers:
+#    Raw numeric literals are idiomatic in a machine emulator.
+# -cppcoreguidelines-non-private-member-variables-in-classes:
+#    GTest fixtures require protected members.
 Checks: >
   clang-diagnostic-*,
   clang-analyzer-*,
@@ -8,7 +15,8 @@ Checks: >
   readability-*,
   -modernize-use-trailing-return-type,
   -cppcoreguidelines-avoid-magic-numbers,
-  -readability-magic-numbers
+  -readability-magic-numbers,
+  -cppcoreguidelines-non-private-member-variables-in-classes
 WarningsAsErrors: ""
 HeaderFilterRegex: "include/zorita/.*"
 FormatStyle: file
