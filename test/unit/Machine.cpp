@@ -46,28 +46,31 @@ TEST(MachineTest, run_swap) {
 }
 
 // Calculate fibonacci(n).
-// Parameters: n is passed in R2.
-//   Use machine.rx(2, val) to initialize R2 to val.
-// Return: result in R8.
+// Parameters: n is passed in memory[1].
+//   Use memory.write(1, val) to initialize n.
+// Return: result in r9.
 class FibonacciTest : public ::testing::Test {
 protected:
   std::vector<uint16_t> rx_{
       0x0000, // r0 = 0 constant
       0x0001, // r1 = 1 constant
-      0x0000, // r2 = n
-      0x0006, // r3 = address of loop label
-      0x0011, // r4 = address of ret label
-      0x0014, // r5 = address of err label
+      0x0001, // r2 = address of n; later reused as n
+      0x0008, // r3 = address of loop label
+      0x0013, // r4 = address of ret label
+      0x0016, // r5 = address of err label
       0x0001, // r6 = i
               // Circular buffer with fib(i-1) and fib(i-2)
       0x0000, // r7 = lf[0]
       0x0000, // r8 = lf[1]
+      0x0000, // r9 = res
   };
   std::vector<uint16_t> program_{
       // Data section
-      0x0001, //   address of code section
+      0x0002, //   address of code section
+      0x0000, //   n
 
       // Code section
+      0x6440, //   load n, n               ; n = *n
       0x2400, //   cmp n, 0
       0x4080, //   je ret                  ; jmp ret if n == 0
       0xb002, //   add lf[1], 0, 1         ; lf[1] = 1
@@ -86,7 +89,7 @@ protected:
       0x44a0, //   jc err                  ; jmp err if carry
       0x4e60, //   j loop                  ; jmp loop
               // ret:
-      0xb0f0, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(n)
+      0xb2f0, //   add res, lf[0], lf[1]   ; res = fib(n)
       0x44a0, //   jc err                  ; jmp err if carry
       0x0000, //   halt
               // err:
@@ -96,29 +99,29 @@ protected:
 
 TEST_F(FibonacciTest, fib0) {
   machine_.run();
-  EXPECT_EQ(machine_.rx(8), 0);
+  EXPECT_EQ(machine_.rx(9), 0);
 }
 
 TEST_F(FibonacciTest, fib1) {
-  machine_.set_rx(2, 1);
+  machine_.memory().write(1, 1);
   machine_.run();
-  EXPECT_EQ(machine_.rx(8), 1);
+  EXPECT_EQ(machine_.rx(9), 1);
 }
 
 TEST_F(FibonacciTest, fib10) {
-  machine_.set_rx(2, 10);
+  machine_.memory().write(1, 10);
   machine_.run();
-  EXPECT_EQ(machine_.rx(8), 55);
+  EXPECT_EQ(machine_.rx(9), 55);
 }
 
 TEST_F(FibonacciTest, fib24) {
-  machine_.set_rx(2, 24);
+  machine_.memory().write(1, 24);
   machine_.run();
-  EXPECT_EQ(machine_.rx(8), 46368);
+  EXPECT_EQ(machine_.rx(9), 46368);
 }
 
 TEST_F(FibonacciTest, fib25) {
-  machine_.set_rx(2, 25);
+  machine_.memory().write(1, 25);
   EXPECT_THAT([&]() { machine_.run(); },
               testing::ThrowsMessage<DecoderError>("invalid instruction"));
 }
@@ -130,16 +133,15 @@ TEST_F(FibonacciTest, fib25) {
 // Parameters: size is passed in memory[1].
 //   Use memory.write(1, val) to initialize the size to a value between 0
 //   and 10.
-// Return: result in R10.
+// Return: result in r10.
 class AccumulatorTest : public ::testing::Test {
 protected:
   std::vector<uint16_t> rx_{
       0x0000, // r0 = 0 constant
       0x0001, // r1 = 1 constant
       0x000a, // r2 = 10 constant
-      0x0001, // r3 = initialized to the address of size;
-              //      later reused as size
-      0x0002, // r4 = the address of the list of values
+      0x0001, // r3 = address of size; later reused as size
+      0x0002, // r4 = address of values[0]; later reused as vptr
       0x0011, // r5 = address of loop label
       0x0019, // r6 = address of ret label
       0x001a, // r7 = address of err label

@@ -38,13 +38,13 @@ The program uses a circular buffer to store the last two Fibonacci numbers.
 | Address | Value  | Description             |
 |---------|--------|-------------------------|
 | 0x0000  | 0x0002 | Address of CODE section |
-| 0x0001  | 0x0024 | `n`                     |
+| 0x0001  | 0x000a | `n`                     |
 
 ### CODE section
 
 | Address | Value  | Label | Mnemonic                | Comment           |
 |---------|--------|-------|-------------------------|-------------------|
-| 0x0002  | 0x0000 |       | load n, n               | n = *n            |
+| 0x0002  | 0x6440 |       | load n, n               | n = *n            |
 | 0x0003  | 0x2400 |       | cmp n, 0                |                   |
 | 0x0004  | 0x4080 |       | je ret                  | jmp ret if n == 0 |
 | 0x0005  | 0xb002 |       | add lf[1], 0, 1         | lf[1] = 1         |
@@ -61,7 +61,7 @@ The program uses a circular buffer to store the last two Fibonacci numbers.
 | 0x0010  | 0xb0f0 |       | add lf[1], lf[0], lf[1] | lf[1] = fib(i)    |
 | 0x0011  | 0x44a0 |       | jc err                  | jmp err if carry  |
 | 0x0012  | 0x4e60 |       | j loop                  |                   |
-| 0x0013  | 0xb0f0 | ret:  | add res, lf[0], lf[1]   | res = fib(n)      |
+| 0x0013  | 0xb2f0 | ret:  | add res, lf[0], lf[1]   | res = fib(n)      |
 | 0x0014  | 0x44a0 |       | jc err                  | jmp err if carry  |
 | 0x0015  | 0x0000 |       | halt                    |                   |
 | 0x0016  |        | err:  |                         |                   |
@@ -101,11 +101,11 @@ The list can have a maximum of 10 elements.
 | Address | Value  | Description             |
 |---------|--------|-------------------------|
 | 0x0000  | 0x000c | Address of CODE section |
-| 0x0001  | 0x0004 | `size`                  |
-| 0x0002  | 0x1000 | `values[0]`             |
-| 0x0003  | 0x2000 | `values[1]`             |
-| 0x0004  | 0x4000 | `values[2]`             |
-| 0x0005  | 0x7fff | `values[3]`             |
+| 0x0001  | 0x0003 | `size`                  |
+| 0x0002  | 0xfff0 | `values[0]`             |
+| 0x0003  | 0x0020 | `values[1]`             |
+| 0x0004  | 0xffc0 | `values[2]`             |
+| 0x0005  | 0x0000 | `values[3]`             |
 | 0x0006  | 0x0000 | `values[4]`             |
 | 0x0007  | 0x0000 | `values[5]`             |
 | 0x0008  | 0x0000 | `values[6]`             |
