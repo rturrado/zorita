@@ -2,29 +2,34 @@
 The code examples below implement two functions in the assembler of the Zorita machine. 
 
 ## Fibonacci
-The Fibonacci example calculates `fibonacci(n)`.
-`n` is passed in R2, and the result is stored in R8.  
-- If `n` is either 0 or 1, the program returns quickly.  
-- Otherwise, the program loops until the `i` counter is equal to `n`,
-  or a carry (unsigned overflow) occurs.  
-  For every iteration, `fibonacci(i)` and `fibonacci(i+1)` are calculated
-  and stored in `lf[0]` and `lf[1]`, a circular buffer.
-- The program overflows when `n` is greater than 24,
-  because the Fibonacci number doesn't fit in a 16-bit word.
+The Fibonacci example calculates `fibonacci(n)`.  
+`n` is passed through memory, and the result is stored in a register.  
+The biggest number that can be computed in this machine is `fibonacci(24)`.
+For `n` bigger than 24, the Fibonacci number cannot be encoded as an `uint16_t`.  
+The program uses a circular buffer to store the last two Fibonacci numbers.
+
+- If `n` is either 0 or 1, the program returns quickly.
+- Otherwise, the program loops until the `i` counter is equal to `n`.  
+  For every iteration, up to two new Fibonacci numbers are calculated
+  (just by adding the numbers in the circular buffer)
+  and stored into `lf[0]` and `lf[1]`, respectively.  
+  If the addition produces a carry, the program terminates with an error.
+- The result is always computed as `fibonacci(n)`.
 
 ### Registers
 
-| Register | Value  | Description             |
-|----------|--------|-------------------------|
-| R0       | 0x0000 | Constant 0              |
-| R1       | 0x0001 | Constant 1              |
-| R2       | 0x0000 | `n`                     |
-| R3       | 0x0006 | Address of `loop` label |
-| R4       | 0x0011 | Address of `ret` label  |
-| R5       | 0x0014 | Address of `err` label  |
-| R6       | 0x0001 | `i`                     |
-| R7       | 0x0000 | `lf[0]`                 |
-| R8       | 0x0000 | `lf[1]`                 |
+| Register | Value  | Description              |
+|----------|--------|--------------------------|
+| R0       | 0x0000 | Constant 0               |
+| R1       | 0x0001 | Constant 1               |
+| R2       | 0x0001 | Address of `n`, then `n` |
+| R3       | 0x0008 | Address of `loop` label  |
+| R4       | 0x0013 | Address of `ret` label   |
+| R5       | 0x0016 | Address of `err` label   |
+| R6       | 0x0001 | `i`                      |
+| R7       | 0x0000 | `lf[0]`                  |
+| R8       | 0x0000 | `lf[1]`                  |
+| R9       | 0x0000 | `res`                    |
 
 ### Memory
 
@@ -32,58 +37,62 @@ The Fibonacci example calculates `fibonacci(n)`.
 
 | Address | Value  | Description             |
 |---------|--------|-------------------------|
-| 0x0000  | 0x0001 | Address of CODE section |
+| 0x0000  | 0x0002 | Address of CODE section |
+| 0x0001  | 0x0024 | `n`                     |
 
 ### CODE section
 
 | Address | Value  | Label | Mnemonic                | Comment           |
 |---------|--------|-------|-------------------------|-------------------|
-| 0x0001  | 0x2400 |       | cmp n, 0                |                   |
-| 0x0002  | 0x4080 |       | je ret                  | jmp ret if n == 0 |
-| 0x0003  | 0xb002 |       | add lf[1], 0, 1         | lf[1] = 1         |
-| 0x0004  | 0x2420 |       | cmp n, 1                |                   |
-| 0x0005  | 0x4080 |       | je ret                  | jmp ret if n == 1 |
-| 0x0006  | 0xacc2 | loop: | add i, i, 1             | i++               |
-| 0x0007  | 0x24c0 |       | cmp n, i                |                   |
-| 0x0008  | 0x4080 |       | je ret                  | jmp ret if n == i |
-| 0x0009  | 0xaef0 |       | add lf[0], lf[0], lf[1] | lf[0] = fib(i)    |
-| 0x000a  | 0x44a0 |       | jc err                  | jmp err if carry  |
-| 0x000b  | 0xacc2 |       | add i, i, 1             | i++               |
-| 0x000c  | 0x24c0 |       | cmp n, i                |                   |
-| 0x000d  | 0x4080 |       | je ret                  | jmp ret if n == i |
-| 0x000e  | 0xb0f0 |       | add lf[1], lf[0], lf[1] | lf[1] = fib(i)    |
-| 0x000f  | 0x44a0 |       | jc err                  | jmp err if carry  |
-| 0x0010  | 0x4e60 |       | j loop                  |                   |
-| 0x0011  | 0xb0f0 | ret:  | add lf[1], lf[0], lf[1] | lf[1] = fib(n)    |
-| 0x0012  | 0x44a0 |       | jc err                  | jmp err if carry  |
-| 0x0013  | 0x0000 |       | halt                    |                   |
-| 0x0014  |        | err:  |                         |                   |
+| 0x0002  | 0x0000 |       | load n, n               | n = *n            |
+| 0x0003  | 0x2400 |       | cmp n, 0                |                   |
+| 0x0004  | 0x4080 |       | je ret                  | jmp ret if n == 0 |
+| 0x0005  | 0xb002 |       | add lf[1], 0, 1         | lf[1] = 1         |
+| 0x0006  | 0x2420 |       | cmp n, 1                |                   |
+| 0x0007  | 0x4080 |       | je ret                  | jmp ret if n == 1 |
+| 0x0008  | 0xacc2 | loop: | add i, i, 1             | i++               |
+| 0x0009  | 0x24c0 |       | cmp n, i                |                   |
+| 0x000a  | 0x4080 |       | je ret                  | jmp ret if n == i |
+| 0x000b  | 0xaef0 |       | add lf[0], lf[0], lf[1] | lf[0] = fib(i)    |
+| 0x000c  | 0x44a0 |       | jc err                  | jmp err if carry  |
+| 0x000d  | 0xacc2 |       | add i, i, 1             | i++               |
+| 0x000e  | 0x24c0 |       | cmp n, i                |                   |
+| 0x000f  | 0x4080 |       | je ret                  | jmp ret if n == i |
+| 0x0010  | 0xb0f0 |       | add lf[1], lf[0], lf[1] | lf[1] = fib(i)    |
+| 0x0011  | 0x44a0 |       | jc err                  | jmp err if carry  |
+| 0x0012  | 0x4e60 |       | j loop                  |                   |
+| 0x0013  | 0xb0f0 | ret:  | add res, lf[0], lf[1]   | res = fib(n)      |
+| 0x0014  | 0x44a0 |       | jc err                  | jmp err if carry  |
+| 0x0015  | 0x0000 |       | halt                    |                   |
+| 0x0016  |        | err:  |                         |                   |
 
 ## Accumulator
-The Accumulator example sums a list of `int16_t` values.
-The `size` of the list is passed in the memory position 1, and the result is stored in R10.
+The Accumulator example sums a list of `int16_t` values.  
+The `size` of the list is passed through memory, and the result is stored in a register.  
 The list can have a maximum of 10 elements.
+
 - If `size` is either 0 or greater than 10, the program returns quickly
   (with a result of 0 or an error, respectively).
 - Otherwise, the program loops until the `i` counter is equal to `size`.  
   For every iteration, the next value `val` is loaded from the memory pointed by `vptr`
-  and added to an accumulator `acc`.
+  and added to an accumulator `acc`.  
+  If the sum produces a signed overflow, the program terminates with an error.
 
 ### Registers
 
-| Register | Value  | Description                               |
-|----------|--------|-------------------------------------------|
-| R0       | 0x0000 | Constant 0                                |
-| R1       | 0x0001 | Constant 1                                |
-| R2       | 0x000a | Constant 10                               |
-| R3       | 0x0001 | Address of `size`; reused as `size`       |
-| R4       | 0x0002 | `vptr` (address of `values[0]`)           |
-| R5       | 0x0011 | Address of `loop` label                   |
-| R6       | 0x0019 | Address of `ret` label                    |
-| R7       | 0x001a | Address of `err` label                    |
-| R8       | 0x0001 | `i`                                       |
-| R9       | 0x0000 | `val`                                     |
-| R10      | 0x0000 | `acc`                                     |
+| Register | Value  | Description                         |
+|----------|--------|-------------------------------------|
+| R0       | 0x0000 | Constant 0                          |
+| R1       | 0x0001 | Constant 1                          |
+| R2       | 0x000a | Constant 10                         |
+| R3       | 0x0001 | Address of `size`, then `size`      |
+| R4       | 0x0002 | Address of `values[0]`, then `vptr` |
+| R5       | 0x0011 | Address of `loop` label             |
+| R6       | 0x0019 | Address of `ret` label              |
+| R7       | 0x001a | Address of `err` label              |
+| R8       | 0x0001 | `i`                                 |
+| R9       | 0x0000 | `val`                               |
+| R10      | 0x0000 | `acc`                               |
 
 ### Memory
 
