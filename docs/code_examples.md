@@ -5,7 +5,8 @@ The code examples below implement two functions in the assembler of the Zorita m
 The Fibonacci example calculates `fibonacci(n)`.
 `n` is passed in R2, and the result is stored in R8.  
 - If `n` is either 0 or 1, the program returns quickly.  
-- Otherwise, the program loops until the `i` counter is equal to `n`, or an overflow occurs.  
+- Otherwise, the program loops until the `i` counter is equal to `n`,
+  or a carry (unsigned overflow) occurs.  
   For every iteration, `fibonacci(i)` and `fibonacci(i+1)` are calculated
   and stored in `lf[0]` and `lf[1]`, a circular buffer.
 - The program overflows when `n` is greater than 24,
@@ -20,7 +21,7 @@ The Fibonacci example calculates `fibonacci(n)`.
 | R2       | 0x0000 | `n`                     |
 | R3       | 0x0006 | Address of `loop` label |
 | R4       | 0x0011 | Address of `ret` label  |
-| R5       | 0x0013 | Address of `err` label  |
+| R5       | 0x0014 | Address of `err` label  |
 | R6       | 0x0001 | `i`                     |
 | R7       | 0x0000 | `lf[0]`                 |
 | R8       | 0x0000 | `lf[1]`                 |
@@ -35,27 +36,28 @@ The Fibonacci example calculates `fibonacci(n)`.
 
 ### CODE section
 
-| Address | Value  | Label | Mnemonic                | Comment               |
-|---------|--------|-------|-------------------------|-----------------------|
-| 0x0001  | 0x2400 |       | cmp n, 0                |                       |
-| 0x0002  | 0x4080 |       | je ret                  | jmp ret if n == 0     |
-| 0x0003  | 0xb002 |       | add lf[1], 0, 1         | lf[1] = 1             |
-| 0x0004  | 0x2420 |       | cmp n, 1                |                       |
-| 0x0005  | 0x4080 |       | je ret                  | jmp ret if n == 1     |
-| 0x0006  | 0xacc2 | loop: | add i, i, 1             | i++                   |
-| 0x0007  | 0x24c0 |       | cmp n, i                |                       |
-| 0x0008  | 0x4080 |       | je ret                  | jmp ret if n == i     |
-| 0x0009  | 0xaef0 |       | add lf[0], lf[0], lf[1] | lf[0] = fib(i)        |
-| 0x000a  | 0x46a0 |       | jv err                  | jmp err if overflow   |
-| 0x000b  | 0xacc2 |       | add i, i, 1             | i++                   |
-| 0x000c  | 0x24c0 |       | cmp n, i                |                       |
-| 0x000d  | 0x4080 |       | je ret                  | jmp ret if n == i     |
-| 0x000e  | 0xb0f0 |       | add lf[1], lf[0], lf[1] | lf[1] = fib(i)        |
-| 0x000f  | 0x46a0 |       | jv err                  | jmp err if overflow   |
-| 0x0010  | 0x4e60 |       | j loop                  |                       |
-| 0x0011  | 0xb0f0 | ret:  | add lf[1], lf[0], lf[1] | lf[1] = fib(n)        |
-| 0x0012  | 0x0000 |       | halt                    |                       |
-| 0x0013  |        | err:  |                         |                       |
+| Address | Value  | Label | Mnemonic                | Comment           |
+|---------|--------|-------|-------------------------|-------------------|
+| 0x0001  | 0x2400 |       | cmp n, 0                |                   |
+| 0x0002  | 0x4080 |       | je ret                  | jmp ret if n == 0 |
+| 0x0003  | 0xb002 |       | add lf[1], 0, 1         | lf[1] = 1         |
+| 0x0004  | 0x2420 |       | cmp n, 1                |                   |
+| 0x0005  | 0x4080 |       | je ret                  | jmp ret if n == 1 |
+| 0x0006  | 0xacc2 | loop: | add i, i, 1             | i++               |
+| 0x0007  | 0x24c0 |       | cmp n, i                |                   |
+| 0x0008  | 0x4080 |       | je ret                  | jmp ret if n == i |
+| 0x0009  | 0xaef0 |       | add lf[0], lf[0], lf[1] | lf[0] = fib(i)    |
+| 0x000a  | 0x44a0 |       | jc err                  | jmp err if carry  |
+| 0x000b  | 0xacc2 |       | add i, i, 1             | i++               |
+| 0x000c  | 0x24c0 |       | cmp n, i                |                   |
+| 0x000d  | 0x4080 |       | je ret                  | jmp ret if n == i |
+| 0x000e  | 0xb0f0 |       | add lf[1], lf[0], lf[1] | lf[1] = fib(i)    |
+| 0x000f  | 0x44a0 |       | jc err                  | jmp err if carry  |
+| 0x0010  | 0x4e60 |       | j loop                  |                   |
+| 0x0011  | 0xb0f0 | ret:  | add lf[1], lf[0], lf[1] | lf[1] = fib(n)    |
+| 0x0012  | 0x44a0 |       | jc err                  | jmp err if carry  |
+| 0x0013  | 0x0000 |       | halt                    |                   |
+| 0x0014  |        | err:  |                         |                   |
 
 ## Accumulator
 The Accumulator example sums a list of `int16_t` values.

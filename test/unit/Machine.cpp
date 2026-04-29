@@ -57,7 +57,7 @@ protected:
       0x0000, // r2 = n
       0x0006, // r3 = address of loop label
       0x0011, // r4 = address of ret label
-      0x0013, // r5 = address of err label
+      0x0014, // r5 = address of err label
       0x0001, // r6 = i
               // Circular buffer with fib(i-1) and fib(i-2)
       0x0000, // r7 = lf[0]
@@ -78,15 +78,16 @@ protected:
       0x24c0, //   cmp n, i
       0x4080, //   je ret                  ; jmp ret if n == i
       0xaef0, //   add lf[0], lf[0], lf[1] ; lf[0] = fib(i)
-      0x46a0, //   jv err                  ; jmp err if overflow
+      0x44a0, //   jc err                  ; jmp err if carry
       0xacc2, //   add i, i, 1             ; i++
       0x24c0, //   cmp n, i
       0x4080, //   je ret                  ; jmp ret if n == i
       0xb0f0, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(i)
-      0x46a0, //   jv err                  ; jmp err if overflow
+      0x44a0, //   jc err                  ; jmp err if carry
       0x4e60, //   j loop                  ; jmp loop
               // ret:
       0xb0f0, //   add lf[1], lf[0], lf[1] ; lf[1] = fib(n)
+      0x44a0, //   jc err                  ; jmp err if carry
       0x0000, //   halt
               // err:
   };
