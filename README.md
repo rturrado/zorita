@@ -64,8 +64,8 @@ docker build -t zorita .
 docker run -it zorita
 ```
 
-And then execute the tests:
+And then execute the tests from the container:
 
 ```
-$ ./build/Debug/test/unit/zorita-unit-test
+./build/Debug/test/unit/zorita-unit-test
 ```
