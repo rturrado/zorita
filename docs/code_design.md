@@ -3,7 +3,7 @@ Zorita doesn't build as an executable.
 It just builds as a library which is then exercised via the tests.
 
 Zorita library offers a `Machine` class, consisting mainly of a `Memory` and some `Registers`:
-general-purpose data registers, and instruction pointer, and a status register.
+general-purpose data registers, an instruction pointer, and a status register.
 
 A machine can be initialized with a binary program by correctly setting the memory and registers.
 For example, the registers can contain constants, code addresses, and variables;
@@ -143,6 +143,6 @@ The machine can only be in two states: `Stopped`, or `Running`:
       [*] --> Stopped
       Stopped --> Running : run()                                                                                                                                                                                                                                                                               
       Running --> Running : execute()
-      Running --> Stopped : execute(Halt)
+      Running --> [*] : execute(Halt)
       Running --> [*] : execute(Invalid)                                                                                                                                                                                                                                                                                
   ```
